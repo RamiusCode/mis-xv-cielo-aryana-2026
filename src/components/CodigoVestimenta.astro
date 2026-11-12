@@ -88,20 +88,29 @@
 
     const tarjeta = document.getElementById("tarjeta-vestimenta");
     if (tarjeta && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-        gsap.fromTo(
-            tarjeta,
-            { opacity: 0, y: 18 },
-            {
-                opacity: 1,
-                y: 0,
-                duration: 0.9,
-                ease: "power2.out",
-                scrollTrigger: {
-                    trigger: tarjeta,
-                    start: "top 82%",
-                    toggleActions: "play none none reset",
-                },
+        const entrada = gsap.timeline({
+            scrollTrigger: {
+                trigger: tarjeta,
+                start: "top 82%",
+                toggleActions: "play none none reset",
             },
-        );
+        });
+        entrada.fromTo(tarjeta, { opacity: 0, x: 36, y: 8, scale: 0.98 }, {
+            opacity: 1, x: 0, y: 0, scale: 1, duration: 0.9, ease: "power3.out",
+        });
+        entrada.fromTo(tarjeta.querySelector("h2"), { opacity: 0, x: -15, y: 8 }, {
+            opacity: 1, x: 0, y: 0, duration: 0.55, ease: "power2.out",
+        }, 0);
+        entrada.fromTo(tarjeta.querySelector(".detalle-rojo"), {
+            opacity: 0, scaleX: 0, transformOrigin: "50% 50%",
+        }, {
+            opacity: 1, scaleX: 1, duration: 0.5, ease: "power2.out",
+        }, 0);
+        entrada.fromTo(tarjeta.querySelector(".imagen-codigo"), { opacity: 0, x: 18, y: 10, scale: 0.92 }, {
+            opacity: 1, x: 0, y: 0, scale: 1, duration: 0.75, ease: "power3.out",
+        }, 0);
+        entrada.fromTo(tarjeta.querySelector(".formal"), { opacity: 0, x: -14, y: 6 }, {
+            opacity: 1, x: 0, y: 0, duration: 0.55, ease: "power2.out",
+        }, 0);
     }
 </script>

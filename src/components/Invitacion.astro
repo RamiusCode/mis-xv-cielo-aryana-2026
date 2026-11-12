@@ -1,7 +1,6 @@
 ---
 // src/components/Invitacion.astro
 // El cuerpo completo de la invitación, en un solo lugar y en orden.
-// import Portada from "./Portada.astro";
 import NombresFlores from "./NombresFlores.astro";
 import Reproductor from "./Reproductor.astro";
 import Dedicatori from "./Dedicatori.astro";
@@ -25,9 +24,6 @@ export interface Props {
 }
 const { pases = 0 } = Astro.props;
 ---
-
-<!-- PORTADA (cubre todo hasta que se toca el sobre) -->
-<!-- <Portada /> -->
 
 <!-- CONTENIDO DE LA INVITACIÓN -->
 <div id="contenido-principal" data-pases={pases}>

@@ -262,17 +262,33 @@ const rutaQr = "/imagenes/qr.png";
 
     const tarjeta = document.getElementById("tarjeta-regalo");
     if (tarjeta && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-        gsap.fromTo(tarjeta, { opacity: 0, y: 18 }, {
-            opacity: 1,
-            y: 0,
-            duration: 0.9,
-            ease: "power2.out",
+        const entrada = gsap.timeline({
             scrollTrigger: {
                 trigger: tarjeta,
                 start: "top 82%",
                 toggleActions: "play none none reset",
             },
         });
+        entrada.fromTo(tarjeta, { opacity: 0, x: -36, y: 8, scale: 0.98 }, {
+            opacity: 1, x: 0, y: 0, scale: 1, duration: 0.9, ease: "power3.out",
+        });
+        entrada.fromTo(tarjeta.querySelector("h2"), { opacity: 0, x: 14, y: 8 }, {
+            opacity: 1, x: 0, y: 0, duration: 0.55, ease: "power2.out",
+        }, 0);
+        entrada.fromTo(tarjeta.querySelector(".regalo-icono"), { opacity: 0, x: -14, y: -7, scale: 0.82, rotation: -8 }, {
+            opacity: 1, x: 0, y: 0, scale: 1, rotation: 0, duration: 0.65, ease: "back.out(1.4)",
+        }, 0);
+        entrada.fromTo(tarjeta.querySelector(".mensaje-regalo"), { opacity: 0, x: 14, y: 7 }, {
+            opacity: 1, x: 0, y: 0, duration: 0.55, ease: "power2.out",
+        }, 0);
+        entrada.fromTo(tarjeta.querySelector(".qr-marco"), { opacity: 0, x: -18, y: 10, scale: 0.95 }, {
+            opacity: 1, x: 0, y: 0, scale: 1, duration: 0.65, ease: "power2.out",
+        }, 0);
+        entrada.fromTo(tarjeta.querySelectorAll(".cuenta, .acciones-qr"), {
+            opacity: 0, x: (index) => index === 0 ? 14 : -14, y: 6,
+        }, {
+            opacity: 1, x: 0, y: 0, duration: 0.5, ease: "power2.out",
+        }, 0);
     }
 
     const visor = document.getElementById("visor-qr");
