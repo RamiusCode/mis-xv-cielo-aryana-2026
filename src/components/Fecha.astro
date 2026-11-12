@@ -1,0 +1,128 @@
+<section class="fecha-xv" aria-label="20 de noviembre de 2026">
+    <img class="fondo-fecha" src="/imagenes/fondo2.png" alt="" />
+
+    <p class="dia">20</p>
+    <h2 class="mes">NOVIEMBRE</h2>
+    <p class="anio">2026</p>
+
+    <img class="estatua" src="/imagenes/estatua.png" alt="Estatua de la Libertad" loading="lazy" />
+</section>
+
+<style>
+    .fecha-xv {
+        position: relative;
+        z-index: 2;
+        isolation: isolate;
+        width: 100%;
+        aspect-ratio: 9 / 16;
+        max-height: 52rem;
+        overflow: hidden;
+        margin: 0 auto;
+        background: #fff;
+        color: #171719;
+        font-family: "Cormorant Garamond", Georgia, serif;
+    }
+
+    .fondo-fecha {
+        position: absolute;
+        z-index: 0;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        opacity: 0.16;
+        filter: grayscale(1);
+        pointer-events: none;
+    }
+
+    .dia,
+    .mes,
+    .anio,
+    .estatua {
+        position: absolute;
+        margin: 0;
+    }
+
+    .dia {
+        z-index: 2;
+        top: 0.5%;
+        right: 5%;
+        color: #b62d45;
+        font-family: "Bebas Neue", Impact, sans-serif;
+        font-size: clamp(7rem, 38vw, 13rem);
+        line-height: 0.95;
+        text-shadow: none;
+    }
+
+    .mes {
+        z-index: 2;
+        top: 17.5%;
+        left: 7%;
+        color: #202022;
+        font-family: "Bebas Neue", Impact, sans-serif;
+        font-size: clamp(2.8rem, 18vw, 6rem);
+        font-weight: 400;
+        letter-spacing: 0.015em;
+        line-height: 0.95;
+        white-space: nowrap;
+        text-shadow: none;
+    }
+
+    .anio {
+        z-index: 2;
+        top: 27%;
+        right: 8%;
+        color: #b62d45;
+        font-family: "Bebas Neue", Impact, sans-serif;
+        font-size: clamp(3.3rem, 20vw, 6rem);
+        line-height: 0.95;
+        letter-spacing: 0.045em;
+        text-shadow: none;
+    }
+
+    .estatua {
+        z-index: 1;
+        left: 27%;
+        bottom: 4%;
+        width: 78%;
+        height: 70%;
+        object-fit: contain;
+        object-position: center bottom;
+        transform: translateX(-50%);
+        filter: grayscale(1) brightness(1.25) contrast(1.08);
+    }
+
+    @media (min-width: 700px) {
+        .fecha-xv {
+            max-width: 31.5rem;
+        }
+    }
+</style>
+
+<script>
+    import { gsap } from "gsap";
+    import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+    gsap.registerPlugin(ScrollTrigger);
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const seccion = document.querySelector(".fecha-xv");
+        const dia = seccion?.querySelector(".dia");
+        const mes = seccion?.querySelector(".mes");
+        const anio = seccion?.querySelector(".anio");
+        const estatua = seccion?.querySelector(".estatua");
+        if (!seccion || !dia || !mes || !anio || !estatua || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+        const entrada = gsap.timeline({
+            scrollTrigger: {
+                trigger: seccion,
+                start: "top 78%",
+                toggleActions: "play none none reset",
+            },
+        });
+        entrada.fromTo(dia, { opacity: 0, x: 20 }, { opacity: 1, x: 0, duration: 1.4, ease: "power2.out" }, 0);
+        entrada.fromTo(mes, { opacity: 0, x: -18 }, { opacity: 1, x: 0, duration: 1.35, ease: "power2.out" }, 0);
+        entrada.fromTo(anio, { opacity: 0, x: 18 }, { opacity: 1, x: 0, duration: 1.4, ease: "power2.out" }, 0);
+        entrada.fromTo(estatua, { opacity: 0, y: 24, scale: 0.99 }, { opacity: 1, y: 0, scale: 1, duration: 1.6, ease: "power2.out" }, 0);
+    });
+</script>

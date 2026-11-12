@@ -1,0 +1,107 @@
+<section id="codigo-vestimenta" class="vestimenta" aria-labelledby="titulo-vestimenta">
+    <div class="tarjeta" id="tarjeta-vestimenta">
+        <h2 id="titulo-vestimenta">Código de vestimenta</h2>
+        <span class="detalle-rojo" aria-hidden="true"></span>
+        <img
+            class="imagen-codigo"
+            src="/imagenes/codigo.png"
+            alt="Ilustración del código de vestimenta"
+            loading="lazy"
+        />
+        <p class="formal">Formal</p>
+    </div>
+</section>
+
+<style>
+    .vestimenta {
+        position: relative;
+        z-index: 2;
+        width: 100%;
+        padding: 2.2rem 8%;
+        overflow: hidden;
+        background: #fff;
+        color: #171518;
+        text-align: center;
+    }
+
+    .tarjeta {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        max-width: 23rem;
+        margin: 0 auto;
+        padding: 1.35rem 1rem 1.2rem;
+        border: 1px solid #262326;
+        background: #fff;
+    }
+
+    h2 {
+        margin: 0;
+        color: #b72d43;
+        font-family: "Bebas Neue", Impact, sans-serif;
+        font-size: clamp(2.15rem, 11vw, 3rem);
+        font-weight: 400;
+        letter-spacing: 0.045em;
+        line-height: 1;
+        text-transform: uppercase;
+    }
+
+    .detalle-rojo {
+        width: 2.5rem;
+        height: 2px;
+        margin: 0.55rem auto 0.85rem;
+        background: #b72d43;
+    }
+
+    .imagen-codigo {
+        display: block;
+        width: min(54%, 11rem);
+        height: auto;
+        object-fit: contain;
+        filter: grayscale(1) contrast(1.08);
+        mix-blend-mode: multiply;
+    }
+
+    .formal {
+        margin: 0.45rem 0 0;
+        color: #b72d43;
+        font-family: "Ragilone Brush", cursive;
+        font-size: clamp(1.8rem, 9vw, 2.4rem);
+        font-weight: 400;
+        line-height: 1.1;
+    }
+
+    @media (min-width: 700px) {
+        .vestimenta {
+            max-width: 31.5rem;
+            margin-inline: auto;
+        }
+    }
+</style>
+
+<script>
+    import { gsap } from "gsap";
+    import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+    gsap.registerPlugin(ScrollTrigger);
+
+    const tarjeta = document.getElementById("tarjeta-vestimenta");
+    if (tarjeta && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        gsap.fromTo(
+            tarjeta,
+            { opacity: 0, y: 18 },
+            {
+                opacity: 1,
+                y: 0,
+                duration: 0.9,
+                ease: "power2.out",
+                scrollTrigger: {
+                    trigger: tarjeta,
+                    start: "top 82%",
+                    toggleActions: "play none none reset",
+                },
+            },
+        );
+    }
+</script>

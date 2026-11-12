@@ -1,0 +1,153 @@
+---
+const telefono = "59169983473";
+const mensaje =
+    "Me complace confirmar mi asistencia a los XV años de Cielo Aryana, que se celebrarán el 20 de noviembre de 2026. Estaré sin falta. Muchas gracias.";
+const enlaceConfirmacion = `https://wa.me/${telefono}?text=${encodeURIComponent(mensaje)}`;
+---
+
+<section class="confirmacion" aria-labelledby="titulo-confirmacion">
+    <img class="ilustracion-ciudad" src="/imagenes/fondo4.png" alt="Estatua de la Libertad y ciudad de Nueva York" loading="lazy" />
+
+    <div class="contenido-confirmacion" id="contenido-confirmacion">
+        <p class="sobre-titulo">Confirmación de</p>
+        <h2 id="titulo-confirmacion">Asistencia</h2>
+        <p class="mensaje-confirmacion">
+            QUIERO COMPARTIR ESTE MOMENTO TAN ESPECIAL CONTIGO.<br />
+            PARA AYUDAR A ORGANIZAR, CONFIRMA TU ASISTENCIA.
+        </p>
+
+        <a class="boton-confirmar" href={enlaceConfirmacion} target="_blank" rel="noopener noreferrer">
+            Confirmar aquí
+        </a>
+    </div>
+</section>
+
+<style>
+    .confirmacion {
+        position: relative;
+        z-index: 2;
+        isolation: isolate;
+        width: 100%;
+        min-height: 34rem;
+        overflow: hidden;
+        padding: 2rem 7% 12rem;
+        background: #fff;
+        color: #171518;
+        text-align: center;
+    }
+
+    .contenido-confirmacion {
+        position: relative;
+        z-index: 1;
+        width: 100%;
+        max-width: 24rem;
+        margin: 0 auto;
+    }
+
+    .sobre-titulo {
+        margin: 0 0 -0.15rem;
+        color: #292428;
+        font-family: "Ragilone Brush", cursive;
+        font-size: clamp(1.8rem, 9vw, 2.7rem);
+        line-height: 1.05;
+    }
+
+    h2 {
+        margin: 0;
+        color: #b72d43;
+        font-family: "Bebas Neue", Impact, sans-serif;
+        font-size: clamp(3.2rem, 17vw, 5rem);
+        font-weight: 400;
+        letter-spacing: 0.035em;
+        line-height: 0.95;
+        text-transform: uppercase;
+    }
+
+    .mensaje-confirmacion {
+        max-width: 22rem;
+        margin: 0.65rem auto 0;
+        color: #302c30;
+        font-family: "Cormorant Garamond", Georgia, serif;
+        font-size: clamp(0.9rem, 4vw, 1.08rem);
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        line-height: 1.35;
+    }
+
+    .boton-confirmar {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 9rem;
+        margin-top: 1rem;
+        padding: 0.65rem 1.25rem;
+        border: 1px solid #b72d43;
+        border-radius: 999px;
+        background: #171518;
+        color: #fff;
+        font-family: "Cormorant Garamond", Georgia, serif;
+        font-size: 1rem;
+        font-weight: 700;
+        text-decoration: none;
+        transition: background-color 180ms ease, transform 180ms ease;
+    }
+
+    .boton-confirmar:hover {
+        transform: translateY(-2px);
+        background: #b72d43;
+    }
+
+    .boton-confirmar:focus-visible {
+        outline: 2px solid #b72d43;
+        outline-offset: 3px;
+    }
+
+    .ilustracion-ciudad {
+        position: absolute;
+        z-index: 0;
+        left: 50%;
+        bottom: -1.5rem;
+        display: block;
+        width: 112%;
+        height: auto;
+        transform: translateX(-50%);
+        opacity: 0.72;
+        pointer-events: none;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .boton-confirmar {
+            transition: none;
+        }
+    }
+
+    @media (min-width: 700px) {
+        .confirmacion {
+            max-width: 31.5rem;
+            margin-inline: auto;
+        }
+    }
+</style>
+
+<script>
+    import { gsap } from "gsap";
+    import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+    gsap.registerPlugin(ScrollTrigger);
+
+    const contenido = document.getElementById("contenido-confirmacion");
+    if (contenido && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        gsap.fromTo(contenido.children, { opacity: 0, y: 16 }, {
+            opacity: 1,
+            y: 0,
+            duration: 0.85,
+            stagger: 0.12,
+            ease: "power2.out",
+            scrollTrigger: {
+                trigger: contenido,
+                start: "top 82%",
+                toggleActions: "play none none reset",
+            },
+        });
+    }
+</script>

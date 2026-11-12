@@ -1,0 +1,46 @@
+---
+// src/components/Invitacion.astro
+// El cuerpo completo de la invitación, en un solo lugar y en orden.
+// import Portada from "./Portada.astro";
+import NombresFlores from "./NombresFlores.astro";
+import Reproductor from "./Reproductor.astro";
+import Dedicatori from "./Dedicatori.astro";
+import Fecha from "./Fecha.astro";
+import Contador from "./Contador.astro";
+import Direccion from "./Direccion.astro";
+import NombresPadres from "./NombresPadres.astro";
+import CodigoVestimenta from "./CodigoVestimenta.astro";
+import SugerenciaRegalo from "./SugerenciaRegalo.astro";
+import Confirma from "./Confirma.astro";
+import Despedida from "./Despedida.astro";
+
+/*
+   Cuántos lugares reserva esta invitación. Lo manda la página:
+   index.astro no le pasa nada y queda en 0; pase[cantidad].astro le pasa
+   el número de la URL (/pase1, /pase2...). Hoy ninguna sección lo usa,
+   queda listo para cuando se conecte el sistema de invitados.
+*/
+export interface Props {
+    pases?: number;
+}
+const { pases = 0 } = Astro.props;
+---
+
+<!-- PORTADA (cubre todo hasta que se toca el sobre) -->
+<!-- <Portada /> -->
+
+<!-- CONTENIDO DE LA INVITACIÓN -->
+<div id="contenido-principal" data-pases={pases}>
+    <NombresFlores />
+    <Reproductor />
+    <Dedicatori />
+    <NombresPadres />
+    <Fecha />
+    <Contador />
+    <Direccion />
+    <CodigoVestimenta />
+    <SugerenciaRegalo />
+    <Confirma />
+    <Despedida />
+</div>
+

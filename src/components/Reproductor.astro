@@ -1,0 +1,229 @@
+<section id="reproductor-musical" class="reproductor" aria-label="Reproductor de música">
+    <audio id="audio-reproductor" src="/musica/melodia2.mp3" preload="metadata"></audio>
+
+    <label class="barra-tiempo" aria-label="Progreso de la canción">
+        <input id="progreso-reproductor" type="range" min="0" max="1000" value="0" />
+    </label>
+
+    <div class="controles">
+        <button class="control auxiliar" id="lista-reproductor" type="button" aria-label="Mostrar canción">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16" /></svg>
+        </button>
+        <button class="control" id="atras-reproductor" type="button" aria-label="Retroceder 10 segundos">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 6 4 12l7 6V6Zm9 0-7 6 7 6V6Z" /></svg>
+        </button>
+        <button class="play" id="play-reproductor" type="button" aria-label="Reproducir">
+            <svg class="icon-play" viewBox="0 0 24 24" aria-hidden="true"><path d="m8 5 12 7-12 7V5Z" /></svg>
+            <svg class="icon-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14M16 5v14" /></svg>
+        </button>
+        <button class="control" id="adelante-reproductor" type="button" aria-label="Avanzar 10 segundos">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m13 6 7 6-7 6V6ZM4 6l7 6-7 6V6Z" /></svg>
+        </button>
+        <button class="control auxiliar corazon" id="favorito-reproductor" type="button" aria-label="Marcar como favorito" aria-pressed="false">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 8.6c0 4.1-8.8 10-8.8 10S3.2 12.7 3.2 8.6A4.6 4.6 0 0 1 12 6.2a4.6 4.6 0 0 1 8.8 2.4Z" /></svg>
+        </button>
+    </div>
+
+    <p class="nombre-cancion" id="detalle-reproductor" hidden>Cielo Aryana · Mis XV años</p>
+</section>
+
+<style>
+    .reproductor {
+        width: min(88%, 320px);
+        margin: 0.65rem auto 2rem;
+        padding: 1.15rem 1.3rem 1rem;
+        border: 1px solid rgba(240, 207, 134, 0.72);
+        border-radius: 19px;
+        background: linear-gradient(145deg, #171416, #050505 70%);
+        color: #fff;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.24);
+    }
+
+    .barra-tiempo {
+        display: block;
+        height: 20px;
+        margin: 0 0 0.8rem;
+    }
+
+    input[type="range"] {
+        --avance: 0%;
+        display: block;
+        width: 100%;
+        height: 20px;
+        margin: 0;
+        appearance: none;
+        background: transparent;
+        cursor: pointer;
+    }
+
+    input[type="range"]::-webkit-slider-runnable-track {
+        height: 3px;
+        border-radius: 3px;
+        background: linear-gradient(90deg, #d5283f var(--avance), #777 var(--avance));
+    }
+
+    input[type="range"]::-moz-range-track {
+        height: 3px;
+        border-radius: 3px;
+        background: #777;
+    }
+
+    input[type="range"]::-moz-range-progress {
+        height: 3px;
+        background: #d5283f;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+        width: 11px;
+        height: 11px;
+        margin-top: -4px;
+        appearance: none;
+        border: 2px solid #fff;
+        border-radius: 50%;
+        background: #d5283f;
+        box-shadow: 0 0 0 2px rgba(240, 207, 134, 0.65);
+    }
+
+    input[type="range"]::-moz-range-thumb {
+        width: 8px;
+        height: 8px;
+        border: 2px solid #fff;
+        border-radius: 50%;
+        background: #d5283f;
+        box-shadow: 0 0 0 2px rgba(240, 207, 134, 0.65);
+    }
+
+    .controles {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.55rem;
+    }
+
+    .control,
+    .play {
+        display: grid;
+        flex: 0 0 auto;
+        place-items: center;
+        padding: 0;
+        border: 0;
+        cursor: pointer;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    .control {
+        width: 30px;
+        height: 34px;
+        background: transparent;
+        color: #fff;
+    }
+
+    .control svg {
+        width: 23px;
+        height: 23px;
+        fill: currentColor;
+    }
+
+    .auxiliar svg {
+        width: 22px;
+        fill: none;
+        stroke: currentColor;
+        stroke-linecap: round;
+        stroke-width: 2.7;
+    }
+
+    .corazon[aria-pressed="true"] {
+        color: #e52d47;
+    }
+
+    .play {
+        width: 43px;
+        height: 43px;
+        border: 2px solid #e8c978;
+        border-radius: 50%;
+        background: #fff;
+        color: #101010;
+    }
+
+    .play svg {
+        width: 22px;
+        height: 22px;
+        fill: currentColor;
+    }
+
+    .play .icon-pause {
+        display: none;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 2.6;
+        stroke-linecap: round;
+    }
+
+    .reproductor.sonando .icon-play {
+        display: none;
+    }
+
+    .reproductor.sonando .icon-pause {
+        display: block;
+    }
+
+    .nombre-cancion {
+        margin: 0.75rem 0 0;
+        color: #e8c978;
+        font: 500 0.8rem/1.2 Arial, sans-serif;
+        text-align: center;
+    }
+
+    button:focus-visible,
+    input:focus-visible {
+        outline: 2px solid #e8c978;
+        outline-offset: 3px;
+    }
+</style>
+
+<script>
+    const audio = document.getElementById("audio-reproductor") as HTMLAudioElement | null;
+    const player = document.querySelector(".reproductor");
+    const botonPlay = document.getElementById("play-reproductor");
+    const progreso = document.getElementById("progreso-reproductor") as HTMLInputElement | null;
+    const detalle = document.getElementById("detalle-reproductor");
+
+    if (audio && player && progreso && botonPlay) {
+        (window as any).audioGlobal = audio;
+        const pintar = () => {
+            const porcentaje = audio.duration ? (audio.currentTime / audio.duration) * 100 : 0;
+            progreso.value = String(Math.round(porcentaje * 10));
+            progreso.style.setProperty("--avance", `${porcentaje}%`);
+            player.classList.toggle("sonando", !audio.paused);
+            botonPlay.setAttribute("aria-label", audio.paused ? "Reproducir" : "Pausar");
+        };
+
+        botonPlay.addEventListener("click", () => {
+            if (audio.paused) audio.play().catch(() => {});
+            else audio.pause();
+        });
+        audio.addEventListener("timeupdate", pintar);
+        audio.addEventListener("loadedmetadata", pintar);
+        audio.addEventListener("play", pintar);
+        audio.addEventListener("pause", pintar);
+        progreso.addEventListener("input", () => {
+            if (audio.duration) audio.currentTime = (Number(progreso.value) / 1000) * audio.duration;
+        });
+        document.getElementById("atras-reproductor")?.addEventListener("click", () => {
+            audio.currentTime = Math.max(0, audio.currentTime - 10);
+        });
+        document.getElementById("adelante-reproductor")?.addEventListener("click", () => {
+            audio.currentTime = Math.min(audio.duration || audio.currentTime + 10, audio.currentTime + 10);
+        });
+        document.getElementById("lista-reproductor")?.addEventListener("click", () => {
+            if (detalle) detalle.hidden = !detalle.hidden;
+        });
+        document.getElementById("favorito-reproductor")?.addEventListener("click", (event) => {
+            const boton = event.currentTarget as HTMLButtonElement;
+            const activo = boton.getAttribute("aria-pressed") !== "true";
+            boton.setAttribute("aria-pressed", String(activo));
+            boton.setAttribute("aria-label", activo ? "Quitar de favoritos" : "Marcar como favorito");
+        });
+        pintar();
+    }
+</script>

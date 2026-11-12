@@ -1,0 +1,157 @@
+<section class="contador" aria-label="Cuenta regresiva para la fiesta">
+    <img class="trazo" src="/imagenes/trazo.png" alt="" aria-hidden="true" loading="lazy" />
+
+    <div class="contenido-contador">
+        <h2 class="faltan">Faltan</h2>
+        <div class="unidades" id="contador-unidades" aria-live="off">
+            <div class="unidad"><span class="valor" data-unidad="dias">00</span><span class="etiqueta">DÍAS</span></div>
+            <span class="dos-puntos">:</span>
+            <div class="unidad"><span class="valor" data-unidad="horas">00</span><span class="etiqueta">HORAS</span></div>
+            <span class="dos-puntos">:</span>
+            <div class="unidad"><span class="valor" data-unidad="minutos">00</span><span class="etiqueta">MINUTOS</span></div>
+            <span class="dos-puntos">:</span>
+            <div class="unidad"><span class="valor" data-unidad="segundos">00</span><span class="etiqueta">SEGUNDOS</span></div>
+        </div>
+    </div>
+</section>
+
+<style>
+    .contador {
+        position: relative;
+        z-index: 2;
+        isolation: isolate;
+        display: grid;
+        place-items: start center;
+        width: 110%;
+        min-height: 17rem;
+        overflow: hidden;
+        padding: 1.15rem 5% 7rem;
+        background: #fff;
+        color: #111;
+        text-align: center;
+    }
+
+    .trazo {
+        position: absolute;
+        z-index: 0;
+        left: 45%;
+        bottom: -8%;
+        width: 100%;
+        height: auto;
+        transform: translateX(-50%);
+        opacity: 0.25;
+        pointer-events: none;
+    }
+
+    .contenido-contador {
+        position: relative;
+        z-index: 1;
+        width: 100%;
+    }
+
+    .faltan {
+        margin: 0 0 0.2rem;
+        color: #9d263c;
+        font-family: "Ragilone Brush", cursive;
+        font-size: clamp(2rem, 10vw, 3rem);
+        font-weight: 400;
+        line-height: 1;
+    }
+
+    .unidades {
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+        gap: clamp(0.15rem, 1.5vw, 0.45rem);
+    }
+
+    .unidad {
+        display: flex;
+        min-width: 0;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .valor {
+        color: #151417;
+        font-family: "Bebas Neue", Impact, sans-serif;
+        font-size: clamp(2.3rem, 12vw, 3.4rem);
+        line-height: 0.95;
+        font-variant-numeric: tabular-nums;
+    }
+
+    .dos-puntos {
+        padding-top: 0.05em;
+        color: #b72d43;
+        font-family: "Bebas Neue", Impact, sans-serif;
+        font-size: clamp(2rem, 10vw, 2.8rem);
+        line-height: 0.95;
+    }
+
+    .etiqueta {
+        margin-top: 0.22rem;
+        color: #b72d43;
+        font-family: "Cormorant Garamond", Georgia, serif;
+        font-size: clamp(0.48rem, 2.5vw, 0.68rem);
+        font-weight: 600;
+        letter-spacing: 0.055em;
+        line-height: 1;
+    }
+
+    @media (min-width: 700px) {
+        .contador {
+            max-width: 31.5rem;
+            margin-inline: auto;
+        }
+    }
+</style>
+
+<script>
+    import { gsap } from "gsap";
+    import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+    gsap.registerPlugin(ScrollTrigger);
+
+    const contador = document.querySelector(".contador");
+    const valores = contador?.querySelectorAll<HTMLElement>(".valor");
+    const fechaEvento = new Date("2026-11-20T17:30:00").getTime();
+
+    if (contador && valores?.length && Number.isFinite(fechaEvento)) {
+        const dos = (n: number) => String(n).padStart(2, "0");
+        const pintar = () => {
+            const restante = Math.max(0, fechaEvento - Date.now());
+            const segundos = Math.floor(restante / 1000);
+            const partes = {
+                dias: Math.floor(segundos / 86400),
+                horas: Math.floor((segundos % 86400) / 3600),
+                minutos: Math.floor((segundos % 3600) / 60),
+                segundos: segundos % 60,
+            };
+            valores.forEach((valor) => {
+                const unidad = valor.dataset.unidad as keyof typeof partes;
+                valor.textContent = dos(partes[unidad]);
+            });
+        };
+
+        pintar();
+        window.setInterval(pintar, 1000);
+
+        if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+            gsap.fromTo(contador.querySelectorAll(".faltan, .unidad, .dos-puntos"),
+                { opacity: 0, y: 14 },
+                {
+                    opacity: 1,
+                    y: 0,
+                    duration: 0.9,
+                    stagger: 0.1,
+                    ease: "power2.out",
+                    scrollTrigger: {
+                        trigger: contador,
+                        start: "top 82%",
+                        toggleActions: "play none none reset",
+                    },
+                },
+            );
+        }
+    }
+</script>

@@ -1,0 +1,291 @@
+---
+import fs from "node:fs";
+
+const qrDisponible = fs.existsSync("public/imagenes/qr.png");
+const rutaQr = "/imagenes/qr.png";
+---
+
+<section class="regalos" aria-labelledby="titulo-regalos">
+    <article class="tarjeta-regalo" id="tarjeta-regalo">
+        <h2 id="titulo-regalos">Sugerencia de regalo</h2>
+
+        <img class="regalo-icono" src="/imagenes/regalo.png" alt="" aria-hidden="true" />
+
+        <p class="mensaje-regalo">
+            Su presencia es lo más importante. Si deseas hacer un obsequio,
+            puedes hacerlo a través del QR.
+        </p>
+
+        <div class="qr-marco">
+            {qrDisponible ? (
+                <img class="qr-imagen" src={rutaQr} alt="Código QR de regalo" loading="lazy" />
+            ) : (
+                <div class="qr-pendiente" role="img" aria-label="Espacio reservado para el código QR">
+                    <span class="qr-esquinas" aria-hidden="true">＋</span>
+                    <span>QR de regalo</span>
+                    <small>Agrega la imagen qr.png</small>
+                </div>
+            )}
+        </div>
+
+        <p class="cuenta">Nombre de cuenta: <strong>Claudia Plata</strong></p>
+
+        <div class="acciones-qr">
+            {qrDisponible ? (
+                <>
+                    <button class="boton-secundario" id="ampliar-qr" type="button">Ampliar QR</button>
+                    <a class="boton-qr" href={rutaQr} download="QR-Claudia-Plata.png">Descargar QR</a>
+                </>
+            ) : (
+                <>
+                    <button class="boton-secundario" type="button" disabled>Ampliar QR</button>
+                    <button class="boton-qr" type="button" disabled>Descargar QR</button>
+                </>
+            )}
+        </div>
+    </article>
+
+    {qrDisponible && (
+        <div class="visor-qr" id="visor-qr" hidden role="dialog" aria-modal="true" aria-label="Código QR ampliado">
+            <button class="cerrar-qr" id="cerrar-qr" type="button" aria-label="Cerrar QR">×</button>
+            <img src={rutaQr} alt="Código QR de regalo ampliado" />
+        </div>
+    )}
+</section>
+
+<style>
+    .regalos {
+        position: relative;
+        z-index: 2;
+        width: 100%;
+        padding: 2.2rem 8%;
+        overflow: hidden;
+        background: #fff;
+        color: #171518;
+    }
+
+    .tarjeta-regalo {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        max-width: 23rem;
+        margin: 0 auto;
+        padding: 1.4rem 1rem 1.35rem;
+        border: 1px solid #262326;
+        background: #fff;
+        text-align: center;
+    }
+
+    h2 {
+        margin: 0;
+        color: #b72d43;
+        font-family: "Bebas Neue", Impact, sans-serif;
+        font-size: clamp(2.2rem, 11vw, 3rem);
+        font-weight: 400;
+        letter-spacing: 0.045em;
+        line-height: 1;
+        text-transform: uppercase;
+    }
+
+    .regalo-icono {
+        display: block;
+        width: 3.4rem;
+        height: 3.4rem;
+        margin: 0.8rem auto 0.55rem;
+        object-fit: contain;
+        filter: invert(16%) sepia(37%) saturate(4254%) hue-rotate(326deg) brightness(82%);
+    }
+
+    .mensaje-regalo {
+        max-width: 20rem;
+        margin: 0;
+        color: #171518;
+        font-family: "Cormorant Garamond", Georgia, serif;
+        font-size: clamp(1rem, 4.4vw, 1.18rem);
+        font-weight: 500;
+        line-height: 1.35;
+    }
+
+    .qr-marco {
+        display: grid;
+        place-items: center;
+        width: min(58vw, 12rem);
+        aspect-ratio: 1;
+        margin: 1.1rem auto 0.8rem;
+        padding: 0.45rem;
+        border: 1px solid #b72d43;
+        background: #fff;
+    }
+
+    .qr-imagen {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        cursor: zoom-in;
+    }
+
+    .qr-pendiente {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 100%;
+        gap: 0.25rem;
+        background-color: #faf8f8;
+        background-image: repeating-linear-gradient(45deg, transparent 0 9px, rgba(183, 45, 67, 0.04) 9px 10px);
+        color: #6d6669;
+        font-family: "Cormorant Garamond", Georgia, serif;
+        font-size: 0.95rem;
+    }
+
+    .qr-esquinas {
+        color: #b72d43;
+        font: 2rem/1 "Cormorant Garamond", Georgia, serif;
+    }
+
+    .qr-pendiente small {
+        color: #9d263c;
+        font-size: 0.75rem;
+    }
+
+    .cuenta {
+        margin: 0;
+        color: #171518;
+        font-family: "Cormorant Garamond", Georgia, serif;
+        font-size: 1rem;
+    }
+
+    .cuenta strong {
+        color: #171518;
+        font-weight: 700;
+    }
+
+    .acciones-qr {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 0.55rem;
+        margin-top: 0.9rem;
+    }
+
+    .boton-secundario,
+    .boton-qr {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 2.5rem;
+        padding: 0.55rem 0.85rem;
+        border: 1px solid #171518;
+        border-radius: 999px;
+        font-family: "Cormorant Garamond", Georgia, serif;
+        font-size: 0.95rem;
+        font-weight: 600;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    .boton-secundario {
+        background: #fff;
+        color: #b72d43;
+    }
+
+    .boton-qr {
+        background: #171518;
+        color: #fff;
+    }
+
+    .boton-qr:hover:not(:disabled) {
+        background: #b72d43;
+    }
+
+    button:disabled {
+        border-color: #bcb7b9;
+        background: #f3f1f2;
+        color: #888184;
+        cursor: not-allowed;
+    }
+
+    .visor-qr:not([hidden]) {
+        position: fixed;
+        z-index: 10000;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        padding: 1.5rem;
+        background: rgba(0, 0, 0, 0.88);
+    }
+
+    .visor-qr img {
+        display: block;
+        max-width: min(88vw, 30rem);
+        max-height: 82vh;
+        padding: 0.5rem;
+        background: #fff;
+    }
+
+    .cerrar-qr {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        width: 2.75rem;
+        height: 2.75rem;
+        border: 1px solid #fff;
+        border-radius: 50%;
+        background: #171518;
+        color: #fff;
+        font: 2rem/1 Arial, sans-serif;
+        cursor: pointer;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .boton-qr {
+            transition: none;
+        }
+    }
+
+    @media (min-width: 700px) {
+        .regalos {
+            max-width: 31.5rem;
+            margin-inline: auto;
+        }
+    }
+</style>
+
+<script>
+    import { gsap } from "gsap";
+    import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+    gsap.registerPlugin(ScrollTrigger);
+
+    const tarjeta = document.getElementById("tarjeta-regalo");
+    if (tarjeta && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        gsap.fromTo(tarjeta, { opacity: 0, y: 18 }, {
+            opacity: 1,
+            y: 0,
+            duration: 0.9,
+            ease: "power2.out",
+            scrollTrigger: {
+                trigger: tarjeta,
+                start: "top 82%",
+                toggleActions: "play none none reset",
+            },
+        });
+    }
+
+    const visor = document.getElementById("visor-qr");
+    document.getElementById("ampliar-qr")?.addEventListener("click", () => {
+        if (visor) visor.hidden = false;
+    });
+    document.getElementById("cerrar-qr")?.addEventListener("click", () => {
+        if (visor) visor.hidden = true;
+    });
+    visor?.addEventListener("click", (event) => {
+        if (event.target === visor) visor.hidden = true;
+    });
+    document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && visor) visor.hidden = true;
+    });
+</script>

@@ -1,0 +1,15 @@
+@import "tailwindcss";
+
+@font-face {
+    font-family: "Ragilone Brush";
+    src: url("/fonts/Ragilone%20Brush.otf") format("opentype");
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+}
+
+/*
+   Las únicas dos fuentes de la invitación son Great Vibes (títulos) y
+   Cormorant Garamond (textos y números). Se cargan con un solo pedido a
+   Google en Layout.astro y cada componente las nombra en su CSS.
+*/

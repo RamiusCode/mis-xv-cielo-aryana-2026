@@ -1,0 +1,161 @@
+<section class="despedida" aria-label="Espera noticias pronto">
+    <div class="contenido-despedida" id="contenido-despedida">
+        <p class="espera">Espera noticias</p>
+        <h2>Pronto</h2>
+    </div>
+
+    <div class="semicirculo" aria-hidden="true"></div>
+    <div class="trazo-despedida" aria-hidden="true"></div>
+    <div class="texto-sello">
+        <p class="sello-frase">Mis XV años</p>
+        <p class="sello-nombre">Cielo Aryana</p>
+    </div>
+</section>
+
+<style>
+    .despedida {
+        position: relative;
+        z-index: 2;
+        isolation: isolate;
+        display: grid;
+        place-items: start center;
+        width: 100%;
+        min-height: 32rem;
+        overflow: hidden;
+        padding: 1.7rem 6% 0;
+        background: #fff;
+        color: #171518;
+        text-align: center;
+    }
+
+    .despedida::after {
+        position: absolute;
+        z-index: 1;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        height: 14%;
+        background: #a92740;
+        content: "";
+        pointer-events: none;
+    }
+
+    .contenido-despedida {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+    }
+
+    .espera {
+        margin: 0;
+        color: #292529;
+        font-family: "Bebas Neue", Impact, sans-serif;
+        font-size: clamp(1.65rem, 8vw, 2.35rem);
+        letter-spacing: 0.08em;
+        line-height: 1;
+        text-transform: uppercase;
+    }
+
+    h2 {
+        margin: -0.04em 0 0;
+        color: #b72d43;
+        font-family: "Bebas Neue", Impact, sans-serif;
+        font-size: clamp(3.3rem, 18vw, 5rem);
+        font-weight: 400;
+        letter-spacing: 0.02em;
+        line-height: 0.88;
+        text-transform: uppercase;
+    }
+
+    .semicirculo {
+        position: absolute;
+        z-index: 2;
+        left: 50%;
+        bottom: -15%;
+        width: min(112%, 25.5rem);
+        aspect-ratio: 1;
+        transform: translateX(-50%);
+        border-radius: 50%;
+        background: #a92740;
+    }
+
+    .texto-sello {
+        position: absolute;
+        z-index: 4;
+        top: 44%;
+        left: 50%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        padding: 0 0.75rem;
+        transform: translateX(-50%);
+        color: #fff;
+    }
+
+    .sello-frase {
+        margin: 0 0 0.2rem;
+        color: #f7eeee;
+        font-family: "Ragilone Brush", cursive;
+        font-size: clamp(1.55rem, 7.5vw, 2.15rem);
+        line-height: 1;
+    }
+
+    .sello-nombre {
+        margin: 0;
+        color: #fff;
+        font-family: "Bebas Neue", Impact, sans-serif;
+        font-size: clamp(2.8rem, 14vw, 4.3rem);
+        line-height: 0.95;
+        text-transform: uppercase;
+    }
+
+    .trazo-despedida {
+        position: absolute;
+        z-index: 3;
+        left: 50%;
+        bottom: -0.5rem;
+        width: 120%;
+        aspect-ratio: 1015 / 715;
+        transform: translateX(-50%);
+        background-color: #f0788e;
+        opacity: 0.9;
+        -webkit-mask: url("/imagenes/trazo.png") center / 100% 100% no-repeat;
+        mask: url("/imagenes/trazo.png") center / 100% 100% no-repeat;
+        pointer-events: none;
+    }
+
+    @media (min-width: 700px) {
+        .despedida {
+            max-width: 31.5rem;
+            margin-inline: auto;
+        }
+    }
+</style>
+
+<script>
+    import { gsap } from "gsap";
+    import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+    gsap.registerPlugin(ScrollTrigger);
+
+    const contenido = document.getElementById("contenido-despedida");
+    if (contenido && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        gsap.fromTo(contenido.children, { opacity: 0, y: 18 }, {
+            opacity: 1,
+            y: 0,
+            duration: 0.9,
+            stagger: 0.14,
+            ease: "power2.out",
+            scrollTrigger: {
+                trigger: contenido,
+                start: "top 82%",
+                toggleActions: "play none none reset",
+            },
+        });
+    }
+</script>
