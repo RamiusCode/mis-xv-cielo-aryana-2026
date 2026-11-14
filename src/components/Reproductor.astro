@@ -29,14 +29,66 @@
 
 <style>
     .reproductor {
-        width: min(88%, 320px);
-        margin: 0.65rem auto 2rem;
-        padding: 1.15rem 1.3rem 1rem;
-        border: 1px solid rgba(240, 207, 134, 0.72);
-        border-radius: 19px;
-        background: linear-gradient(145deg, #171416, #050505 70%);
-        color: #fff;
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.24);
+        width: 100%;
+        max-width: 31.5rem;
+        margin: 0 auto;
+        padding: 1.2rem 8% 1.1rem;
+        border-top: 1px solid #8d9097;
+        border-radius: 0;
+        background-color: #c9ccd2;
+        color: #111;
+        position: relative;
+        overflow: hidden;
+    }
+
+    /* Destello plateado que pasa por el borde de arriba cada pocos segundos */
+    .reproductor::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 22%;
+        height: 2px;
+        background: #fff;
+        opacity: 1;
+        transform: translateX(-120%);
+        animation: destello-borde 5s ease-in-out infinite;
+        pointer-events: none;
+    }
+
+    @keyframes destello-borde {
+        0% {
+            transform: translateX(-120%);
+        }
+        40%,
+        100% {
+            transform: translateX(520%);
+        }
+    }
+
+    /* Brillo suave en el botón play mientras suena la música */
+    .reproductor.sonando .play {
+        animation: brillo-play 2.4s ease-in-out infinite;
+    }
+
+    @keyframes brillo-play {
+        0%,
+        100% {
+            box-shadow: 0 0 0 0 rgba(17, 17, 17, 0.35);
+        }
+        50% {
+            box-shadow: 0 0 10px 4px rgba(17, 17, 17, 0.22);
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .reproductor::before,
+        .reproductor.sonando .play {
+            animation: none;
+        }
+        .reproductor::before {
+            display: none;
+        }
     }
 
     .barra-tiempo {
@@ -59,13 +111,13 @@
     input[type="range"]::-webkit-slider-runnable-track {
         height: 3px;
         border-radius: 3px;
-        background: linear-gradient(90deg, #d5283f var(--avance), #777 var(--avance));
+        background: linear-gradient(90deg, #d5283f var(--avance), #8d9097 var(--avance));
     }
 
     input[type="range"]::-moz-range-track {
         height: 3px;
         border-radius: 3px;
-        background: #777;
+        background: #8d9097;
     }
 
     input[type="range"]::-moz-range-progress {
@@ -81,7 +133,7 @@
         border: 2px solid #fff;
         border-radius: 50%;
         background: #d5283f;
-        box-shadow: 0 0 0 2px rgba(240, 207, 134, 0.65);
+        box-shadow: 0 0 0 1px #111;
     }
 
     input[type="range"]::-moz-range-thumb {
@@ -90,7 +142,7 @@
         border: 2px solid #fff;
         border-radius: 50%;
         background: #d5283f;
-        box-shadow: 0 0 0 2px rgba(240, 207, 134, 0.65);
+        box-shadow: 0 0 0 1px #111;
     }
 
     .controles {
@@ -115,7 +167,7 @@
         width: 30px;
         height: 34px;
         background: transparent;
-        color: #fff;
+        color: #111;
     }
 
     .control svg {
@@ -139,10 +191,11 @@
     .play {
         width: 43px;
         height: 43px;
-        border: 2px solid #e8c978;
+        border: 2px solid #fff;
         border-radius: 50%;
-        background: #fff;
-        color: #101010;
+        background: #111;
+        color: #e4e6ea;
+        box-shadow: 0 2px 6px rgba(17, 17, 17, 0.3);
     }
 
     .play svg {
@@ -169,14 +222,14 @@
 
     .nombre-cancion {
         margin: 0.75rem 0 0;
-        color: #e8c978;
+        color: #2a2b2f;
         font: 500 0.8rem/1.2 Arial, sans-serif;
         text-align: center;
     }
 
     button:focus-visible,
     input:focus-visible {
-        outline: 2px solid #e8c978;
+        outline: 2px solid #111;
         outline-offset: 3px;
     }
 </style>

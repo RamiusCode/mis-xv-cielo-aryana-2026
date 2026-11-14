@@ -1,13 +1,27 @@
 ---
+import RamaMarco from "./RamaMarco.astro";
 import fs from "node:fs";
 
 const qrDisponible = fs.existsSync("public/imagenes/qr.png");
 const rutaQr = "/imagenes/qr.png";
+
+const titulo = "Sugerencia de regalo";
+const sobreTitulo = "Sugerencia de";
+const letrasTitulo = Array.from("Regalo");
 ---
 
-<section class="regalos" aria-labelledby="titulo-regalos">
+<section class="regalos" id="seccion-regalos" aria-labelledby="titulo-regalos">
+    <img class="fondo-regalo" src="/imagenes/fondo2.png" alt="" aria-hidden="true" loading="lazy" />
+
     <article class="tarjeta-regalo" id="tarjeta-regalo">
-        <h2 id="titulo-regalos">Sugerencia de regalo</h2>
+        <span class="rombo" aria-hidden="true"></span>
+
+        <h2 id="titulo-regalos" aria-label={titulo}>
+            <span class="sobre-titulo" aria-hidden="true">{sobreTitulo}</span>
+            <span class="titulo-grande" aria-hidden="true">
+                {letrasTitulo.map((l) => <span class="letra">{l}</span>)}
+            </span>
+        </h2>
 
         <img class="regalo-icono" src="/imagenes/regalo.png" alt="" aria-hidden="true" />
 
@@ -16,16 +30,23 @@ const rutaQr = "/imagenes/qr.png";
             puedes hacerlo a través del QR.
         </p>
 
-        <div class="qr-marco">
-            {qrDisponible ? (
-                <img class="qr-imagen" src={rutaQr} alt="Código QR de regalo" loading="lazy" />
-            ) : (
-                <div class="qr-pendiente" role="img" aria-label="Espacio reservado para el código QR">
-                    <span class="qr-esquinas" aria-hidden="true">＋</span>
-                    <span>QR de regalo</span>
-                    <small>Agrega la imagen qr.png</small>
-                </div>
-            )}
+        <div class="qr-caja">
+            <span class="esq e1" aria-hidden="true"></span>
+            <span class="esq e2" aria-hidden="true"></span>
+            <span class="esq e3" aria-hidden="true"></span>
+            <span class="esq e4" aria-hidden="true"></span>
+            <div class="qr-marco">
+                {qrDisponible ? (
+                    <img class="qr-imagen" src={rutaQr} alt="Código QR de regalo" loading="lazy" />
+                ) : (
+                    <div class="qr-pendiente" role="img" aria-label="Espacio reservado para el código QR">
+                        <span class="qr-esquinas" aria-hidden="true">＋</span>
+                        <span>QR de regalo</span>
+                        <small>Agrega la imagen qr.png</small>
+                    </div>
+                )}
+                <span class="barrido" aria-hidden="true"></span>
+            </div>
         </div>
 
         <p class="cuenta">Nombre de cuenta: <strong>Claudia Plata</strong></p>
@@ -33,16 +54,29 @@ const rutaQr = "/imagenes/qr.png";
         <div class="acciones-qr">
             {qrDisponible ? (
                 <>
-                    <button class="boton-secundario" id="ampliar-qr" type="button">Ampliar QR</button>
-                    <a class="boton-qr" href={rutaQr} download="QR-Claudia-Plata.png">Descargar QR</a>
+                    <button class="boton-secundario" id="ampliar-qr" type="button">
+                        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="6.5" /><path d="m16 16 4.5 4.5M11 8.5v5M8.5 11h5" /></svg>
+                        Ampliar QR
+                    </button>
+                    <a class="boton-qr" href={rutaQr} download="QR-Claudia-Plata.png">
+                        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 4v11m0 0-4.5-4.5M12 15l4.5-4.5M5 19.5h14" /></svg>
+                        Descargar QR
+                    </a>
                 </>
             ) : (
                 <>
-                    <button class="boton-secundario" type="button" disabled>Ampliar QR</button>
-                    <button class="boton-qr" type="button" disabled>Descargar QR</button>
+                    <button class="boton-secundario" type="button" disabled>
+                        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="6.5" /><path d="m16 16 4.5 4.5M11 8.5v5M8.5 11h5" /></svg>
+                        Ampliar QR
+                    </button>
+                    <button class="boton-qr" type="button" disabled>
+                        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 4v11m0 0-4.5-4.5M12 15l4.5-4.5M5 19.5h14" /></svg>
+                        Descargar QR
+                    </button>
                 </>
             )}
         </div>
+        <RamaMarco color="#9a9da4" fondo="#fff" />
     </article>
 
     {qrDisponible && (
@@ -57,24 +91,56 @@ const rutaQr = "/imagenes/qr.png";
     .regalos {
         position: relative;
         z-index: 2;
+        isolation: isolate;
         width: 100%;
-        padding: 2.2rem 8%;
+        padding: 2.8rem 8%;
         overflow: hidden;
-        background: #fff;
+        background-color: #fff;
+        background-image: linear-gradient(#fff, #fff);
         color: #171518;
     }
 
+    /* Imagen de la ciudad de fondo, muy tenue, igual que en la fecha y la dirección */
+    .fondo-regalo {
+        position: absolute;
+        z-index: 0;
+        inset: -8% 0;
+        width: 100%;
+        max-width: none;
+        height: 116%;
+        object-fit: cover;
+        object-position: 25% center;
+        opacity: 0.13;
+        filter: grayscale(1);
+        pointer-events: none;
+    }
+
+    /* Marco igual al de la dedicatoria y los padres */
     .tarjeta-regalo {
+        position: relative;
+        z-index: 1;
         display: flex;
         flex-direction: column;
         align-items: center;
         width: 100%;
         max-width: 23rem;
         margin: 0 auto;
-        padding: 1.4rem 1rem 1.35rem;
+        padding: 1.7rem 1rem 1.4rem;
         border: 1px solid #262326;
-        background: #fff;
+        background-color: rgba(255, 255, 255, 0.84);
         text-align: center;
+    }
+
+    .rombo {
+        position: absolute;
+        top: 0;
+        left: 50%;
+        width: 0.5rem;
+        aspect-ratio: 1;
+        translate: -50% -50%;
+        rotate: 45deg;
+        background: #b72d43;
+        box-shadow: 0 0 0 3px #fff;
     }
 
     h2 {
@@ -88,11 +154,34 @@ const rutaQr = "/imagenes/qr.png";
         text-transform: uppercase;
     }
 
+    /* Parte de arriba del título, en cursiva */
+    .sobre-titulo {
+        display: block;
+        margin-bottom: -0.15rem;
+        color: #292428;
+        font-family: "Ragilone Brush", cursive;
+        font-size: clamp(1.8rem, 9vw, 2.6rem);
+        font-weight: 400;
+        letter-spacing: 0;
+        line-height: 1.05;
+        text-transform: none;
+    }
+
+    .titulo-grande {
+        display: block;
+        white-space: nowrap;
+    }
+
+    .letra {
+        display: inline-block;
+    }
+
+    /* Icono del regalo en rojo */
     .regalo-icono {
         display: block;
         width: 3.4rem;
         height: 3.4rem;
-        margin: 0.8rem auto 0.55rem;
+        margin: 0.9rem auto 0.6rem;
         object-fit: contain;
         filter: invert(16%) sepia(37%) saturate(4254%) hue-rotate(326deg) brightness(82%);
     }
@@ -107,15 +196,67 @@ const rutaQr = "/imagenes/qr.png";
         line-height: 1.35;
     }
 
+    /* QR con esquinas rojas */
+    .qr-caja {
+        position: relative;
+        width: min(58vw, 12rem);
+        margin: 1.4rem auto 1rem;
+    }
+
+    .esq {
+        position: absolute;
+        width: 1.1rem;
+        height: 1.1rem;
+        border: 0 solid #b72d43;
+    }
+
+    .e1 {
+        top: -0.55rem;
+        left: -0.55rem;
+        border-width: 2px 0 0 2px;
+    }
+
+    .e2 {
+        top: -0.55rem;
+        right: -0.55rem;
+        border-width: 2px 2px 0 0;
+    }
+
+    .e3 {
+        bottom: -0.55rem;
+        left: -0.55rem;
+        border-width: 0 0 2px 2px;
+    }
+
+    .e4 {
+        bottom: -0.55rem;
+        right: -0.55rem;
+        border-width: 0 2px 2px 0;
+    }
+
     .qr-marco {
+        position: relative;
         display: grid;
         place-items: center;
-        width: min(58vw, 12rem);
+        width: 100%;
         aspect-ratio: 1;
-        margin: 1.1rem auto 0.8rem;
         padding: 0.45rem;
+        overflow: hidden;
         border: 1px solid #b72d43;
-        background: #fff;
+        background-color: #fff;
+        background-image: linear-gradient(#fff, #fff);
+    }
+
+    /* Línea roja que recorre el QR una vez, como un escáner */
+    .barrido {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        height: 2px;
+        background: #d5283f;
+        opacity: 0;
+        pointer-events: none;
     }
 
     .qr-imagen {
@@ -134,8 +275,6 @@ const rutaQr = "/imagenes/qr.png";
         width: 100%;
         height: 100%;
         gap: 0.25rem;
-        background-color: #faf8f8;
-        background-image: repeating-linear-gradient(45deg, transparent 0 9px, rgba(183, 45, 67, 0.04) 9px 10px);
         color: #6d6669;
         font-family: "Cormorant Garamond", Georgia, serif;
         font-size: 0.95rem;
@@ -176,29 +315,60 @@ const rutaQr = "/imagenes/qr.png";
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        min-height: 2.5rem;
-        padding: 0.55rem 0.85rem;
-        border: 1px solid #171518;
+        gap: 0.4rem;
+        min-height: 2.6rem;
+        padding: 0.5rem 0.8rem;
+        border: 1px solid #8d9097;
         border-radius: 999px;
         font-family: "Cormorant Garamond", Georgia, serif;
         font-size: 0.95rem;
-        font-weight: 600;
+        font-weight: 700;
+        letter-spacing: 0.01em;
+        white-space: nowrap;
+        color: #171518;
         text-decoration: none;
         cursor: pointer;
+        box-shadow: 0 2px 6px rgba(23, 21, 24, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.7);
+        transition: background-color 200ms ease, color 200ms ease, border-color 200ms ease, transform 200ms ease;
     }
 
+    .boton-secundario svg,
+    .boton-qr svg {
+        width: 1.05rem;
+        height: 1.05rem;
+        stroke: #b72d43;
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        transition: stroke 200ms ease;
+    }
+
+    /* Botones plateados */
     .boton-secundario {
-        background: #fff;
-        color: #b72d43;
+        background: #e4e6ea;
     }
 
     .boton-qr {
-        background: #171518;
-        color: #fff;
+        background: #c4c7cd;
     }
 
+    .boton-secundario:hover:not(:disabled),
     .boton-qr:hover:not(:disabled) {
-        background: #b72d43;
+        background: #171518;
+        border-color: #171518;
+        color: #fff;
+        transform: translateY(-2px);
+    }
+
+    .boton-secundario:hover:not(:disabled) svg,
+    .boton-qr:hover:not(:disabled) svg {
+        stroke: #e04a62;
+    }
+
+    button:focus-visible,
+    a:focus-visible {
+        outline: 2px solid #b72d43;
+        outline-offset: 3px;
     }
 
     button:disabled {
@@ -215,7 +385,7 @@ const rutaQr = "/imagenes/qr.png";
         display: grid;
         place-items: center;
         padding: 1.5rem;
-        background: rgba(0, 0, 0, 0.88);
+        background: rgba(0, 0, 0, 0.92);
     }
 
     .visor-qr img {
@@ -232,7 +402,7 @@ const rutaQr = "/imagenes/qr.png";
         right: 1rem;
         width: 2.75rem;
         height: 2.75rem;
-        border: 1px solid #fff;
+        border: 1px solid #c9ccd2;
         border-radius: 50%;
         background: #171518;
         color: #fff;
@@ -241,7 +411,8 @@ const rutaQr = "/imagenes/qr.png";
     }
 
     @media (prefers-reduced-motion: reduce) {
-        .boton-qr {
+        .boton-qr,
+        .boton-secundario {
             transition: none;
         }
     }
@@ -260,35 +431,87 @@ const rutaQr = "/imagenes/qr.png";
 
     gsap.registerPlugin(ScrollTrigger);
 
+    const seccion = document.getElementById("seccion-regalos");
     const tarjeta = document.getElementById("tarjeta-regalo");
-    if (tarjeta && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    if (seccion && tarjeta && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        const rombo = tarjeta.querySelector(".rombo");
+        const fondo = seccion.querySelector(".fondo-regalo");
+        const sobre = tarjeta.querySelector(".sobre-titulo");
+        const letrasTitulo = tarjeta.querySelectorAll(".titulo-grande .letra");
+        const icono = tarjeta.querySelector(".regalo-icono");
+        const mensaje = tarjeta.querySelector(".mensaje-regalo");
+        const esquinas = tarjeta.querySelectorAll(".esq");
+        const qrMarco = tarjeta.querySelector(".qr-marco");
+        const barrido = tarjeta.querySelector(".barrido");
+        const cuenta = tarjeta.querySelector(".cuenta");
+        const botones = tarjeta.querySelectorAll(".boton-secundario, .boton-qr");
+
         const entrada = gsap.timeline({
             scrollTrigger: {
-                trigger: tarjeta,
-                start: "top 82%",
+                trigger: seccion,
+                start: "top 80%",
                 toggleActions: "play none none reset",
             },
         });
-        entrada.fromTo(tarjeta, { opacity: 0, x: -36, y: 8, scale: 0.98 }, {
-            opacity: 1, x: 0, y: 0, scale: 1, duration: 0.9, ease: "power3.out",
-        });
-        entrada.fromTo(tarjeta.querySelector("h2"), { opacity: 0, x: 14, y: 8 }, {
-            opacity: 1, x: 0, y: 0, duration: 0.55, ease: "power2.out",
-        }, 0);
-        entrada.fromTo(tarjeta.querySelector(".regalo-icono"), { opacity: 0, x: -14, y: -7, scale: 0.82, rotation: -8 }, {
-            opacity: 1, x: 0, y: 0, scale: 1, rotation: 0, duration: 0.65, ease: "back.out(1.4)",
-        }, 0);
-        entrada.fromTo(tarjeta.querySelector(".mensaje-regalo"), { opacity: 0, x: 14, y: 7 }, {
-            opacity: 1, x: 0, y: 0, duration: 0.55, ease: "power2.out",
-        }, 0);
-        entrada.fromTo(tarjeta.querySelector(".qr-marco"), { opacity: 0, x: -18, y: 10, scale: 0.95 }, {
-            opacity: 1, x: 0, y: 0, scale: 1, duration: 0.65, ease: "power2.out",
-        }, 0);
-        entrada.fromTo(tarjeta.querySelectorAll(".cuenta, .acciones-qr"), {
-            opacity: 0, x: (index) => index === 0 ? 14 : -14, y: 6,
-        }, {
-            opacity: 1, x: 0, y: 0, duration: 0.5, ease: "power2.out",
-        }, 0);
+
+        if (fondo) entrada.fromTo(fondo, { opacity: 0 }, { opacity: 0.13, duration: 2, ease: "power2.out" }, 0);
+        entrada.fromTo(tarjeta, { opacity: 0, scale: 0.96 }, { opacity: 1, scale: 1, duration: 0.7, ease: "power2.out" }, 0);
+        entrada.fromTo(rombo, { scale: 0 }, { scale: 1, duration: 0.6, ease: "back.out(2.5)" }, 0.5);
+
+        // Título: la parte cursiva se escribe y la grande entra letra por letra
+        if (sobre) {
+            entrada.fromTo(
+                sobre,
+                { clipPath: "inset(-20% 100% -20% 0%)" },
+                { clipPath: "inset(-20% 0% -20% 0%)", duration: 1, ease: "power2.inOut" },
+                0.6
+            );
+        }
+        entrada.fromTo(
+            letrasTitulo,
+            { opacity: 0, x: (i) => (i % 2 === 0 ? -32 : 32), filter: "blur(4px)" },
+            { opacity: 1, x: 0, filter: "blur(0px)", duration: 0.9, ease: "power2.out", stagger: 0.06 },
+            1.0
+        );
+
+        // Regalo: aparece girando un poco, con rebote
+        entrada.fromTo(icono, { opacity: 0, scale: 0.5, rotation: -14 }, { opacity: 1, scale: 1, rotation: 0, duration: 0.9, ease: "back.out(1.8)" }, 1.5);
+
+        // Mensaje: sube con un fundido
+        entrada.fromTo(mensaje, { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.9, ease: "power2.out" }, 1.9);
+
+        // QR: se abre desde el centro, las esquinas se cierran y una línea roja lo escanea
+        entrada.fromTo(esquinas, { opacity: 0, scale: 2 }, { opacity: 1, scale: 1, duration: 0.7, ease: "power2.out", stagger: 0.08 }, 2.3);
+        entrada.fromTo(
+            qrMarco,
+            { clipPath: "inset(50% 0% 50% 0%)" },
+            { clipPath: "inset(0% 0% 0% 0%)", duration: 1.1, ease: "power3.out" },
+            2.4
+        );
+        if (barrido) {
+            entrada.fromTo(barrido, { opacity: 1, top: "0%" }, { top: "100%", duration: 1.3, ease: "power1.inOut" }, 3.4);
+            entrada.to(barrido, { opacity: 0, duration: 0.2 }, 4.6);
+        }
+
+        // Cuenta y botones
+        entrada.fromTo(cuenta, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.7, ease: "power2.out" }, 3.4);
+        entrada.fromTo(
+            botones,
+            { opacity: 0, x: (i) => (i === 0 ? -24 : 24) },
+            { opacity: 1, x: 0, duration: 0.7, ease: "power2.out" },
+            3.7
+        );
+
+        // PARALLAX: el regalo se mueve a distinta velocidad
+        const parallax = (objetivo: Element | null, desde: number, hasta: number) => {
+            if (!objetivo) return;
+            gsap.fromTo(
+                objetivo,
+                { yPercent: desde },
+                { yPercent: hasta, ease: "none", scrollTrigger: { trigger: seccion, start: "top bottom", end: "bottom top", scrub: 0.6 } }
+            );
+        };
+        parallax(icono, 25, -25);
     }
 
     const visor = document.getElementById("visor-qr");

@@ -1,0 +1,62 @@
+---
+/*
+   Ramita fina para el borde de abajo de un marco: dos curvas con hojitas
+   que salen de un rombo rojo. Se pone dentro de un contenedor con
+   position: relative.
+
+   color: color de la ramita.  fondo: color de la sección (tapa el borde
+   del marco justo detrás, igual que el rombo de arriba).
+*/
+export interface Props {
+    color?: string;
+    fondo?: string;
+}
+const { color = "#c9ccd2", fondo = "#050505" } = Astro.props;
+---
+
+<span class="rama-marco" aria-hidden="true" style={`--c:${color};--fondo:${fondo}`}>
+    <svg viewBox="0 0 120 18" fill="none">
+        <g class="lado">
+            <path pathLength="1" d="M53 9 H30 C23 9 21 3.5 14.5 3.5 C9.5 3.5 8.5 8 12 9 C15 9.8 16.5 7 14.5 5.8" />
+            <path pathLength="1" d="M33 9 C31 14 25.5 15 22 14 C23.5 11 27.5 9 33 9 Z" />
+        </g>
+        <g class="lado" transform="translate(120 0) scale(-1 1)">
+            <path pathLength="1" d="M53 9 H30 C23 9 21 3.5 14.5 3.5 C9.5 3.5 8.5 8 12 9 C15 9.8 16.5 7 14.5 5.8" />
+            <path pathLength="1" d="M33 9 C31 14 25.5 15 22 14 C23.5 11 27.5 9 33 9 Z" />
+        </g>
+        <path class="rombo-rama" d="M60 5.2 L63.8 9 L60 12.8 L56.2 9 Z" />
+    </svg>
+</span>
+
+<style>
+    .rama-marco {
+        position: absolute;
+        left: 50%;
+        bottom: 0;
+        z-index: 2;
+        display: block;
+        padding: 0 0.5rem;
+        translate: -50% 50%;
+        background-color: var(--fondo);
+        line-height: 0;
+        pointer-events: none;
+    }
+
+    svg {
+        display: block;
+        width: 7.4rem;
+        height: auto;
+        overflow: visible;
+    }
+
+    .lado path {
+        stroke: var(--c);
+        stroke-width: 1;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+
+    .rombo-rama {
+        fill: #d5283f;
+    }
+</style>

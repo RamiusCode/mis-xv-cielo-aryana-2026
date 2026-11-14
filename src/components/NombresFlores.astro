@@ -1,23 +1,77 @@
 ---
-// Primera sección de la invitación: presentación inspirada en la referencia.
+// Primera sección de la invitación: portada con el nombre.
+// Paleta: negro, plateado y blanco, con detalles en rojo.
 import fondoImagen from "../assets/fondo1.png";
 
 const frase = "Mis XV años";
 const nombre = "Cielo Aryana";
+
+// El nombre se separa en letras para animarlas una por una.
+const letras = Array.from(nombre);
+
+// Destellos plateados (y alguno rojo) sobre la parte blanca de la portada.
+const destellos = [
+    { x: 8, y: 5, t: 1.1, rojo: false },
+    { x: 90, y: 7, t: 0.8, rojo: false },
+    { x: 22, y: 25, t: 0.7, rojo: true },
+    { x: 78, y: 23, t: 1.0, rojo: false },
+    { x: 60, y: 30, t: 0.6, rojo: false },
+    { x: 93, y: 34, t: 0.75, rojo: true },
+    { x: 46, y: 38, t: 0.55, rojo: false },
+    { x: 4, y: 33, t: 0.65, rojo: false },
+];
 ---
 
 <section id="sobre-novios" class="portada-nombre" aria-label={`${frase} ${nombre}`}>
-    <img class="fondo" src={fondoImagen.src} alt="" />
+    <!-- La imagen completa (estatua y ciudad juntas). La capa que la envuelve lleva el parallax; la imagen, el zoom de entrada -->
+    <div class="capa-fondo" aria-hidden="true">
+        <img class="fondo" src={fondoImagen.src} alt="" />
+    </div>
+    <span class="antorcha" aria-hidden="true"></span>
+    <span class="velo" aria-hidden="true"></span>
+
+    <div class="destellos" aria-hidden="true">
+        {
+            destellos.map((d) => (
+                <span
+                    class:list={["destello", { rojo: d.rojo }]}
+                    style={`left:${d.x}%;top:${d.y}%;--t:${d.t}`}
+                />
+            ))
+        }
+    </div>
 
     <div class="texto-superior">
         <p class="frase">{frase}</p>
-        <h1>{nombre}</h1>
+        <h1 aria-label={nombre}>
+            {
+                letras.map((letra) =>
+                    letra === " " ? (
+                        <span class="espacio" aria-hidden="true" />
+                    ) : (
+                        <span class="letra" aria-hidden="true">
+                            {letra}
+                        </span>
+                    )
+                )
+            }
+        </h1>
+        <div class="adorno" aria-hidden="true">
+            <span class="linea izquierda"></span>
+            <span class="rombo"></span>
+            <span class="linea derecha"></span>
+        </div>
     </div>
-
 </section>
 
 <style>
     .portada-nombre {
+        --negro: #0d0d0f;
+        --plata-oscura: #4a4c52;
+        --plata: #a9acb3;
+        --plata-clara: #f3f4f6;
+        --rojo: #b3122e;
+
         position: relative;
         z-index: 2;
         isolation: isolate;
@@ -29,17 +83,83 @@ const nombre = "Cielo Aryana";
         justify-content: space-between;
         align-items: center;
         padding: 11% 8% 2.5%;
-        color: #0b0a0d;
+        color: var(--negro);
         text-align: center;
+        background-image: linear-gradient(#fff, #fff);
+    }
+
+    .capa-fondo {
+        position: absolute;
+        z-index: 0;
+        inset: 0;
+        transform-origin: 50% 60%;
+        will-change: transform;
     }
 
     .fondo {
         position: absolute;
-        z-index: 0;
         inset: 0;
         width: 100%;
         height: 100%;
+        max-width: none;
         object-fit: fill;
+    }
+
+
+    /* Brillo rojo sobre la llama de la antorcha */
+    .antorcha {
+        position: absolute;
+        z-index: 1;
+        left: 12.6%;
+        top: 13.4%;
+        width: 18%;
+        aspect-ratio: 1;
+        translate: -50% -50%;
+        border-radius: 50%;
+        background: radial-gradient(
+            circle,
+            rgba(179, 18, 46, 0.55) 0%,
+            rgba(179, 18, 46, 0.22) 38%,
+            rgba(179, 18, 46, 0) 70%
+        );
+        mix-blend-mode: multiply;
+        opacity: 0.85;
+        pointer-events: none;
+    }
+
+    /* Velo blanco arriba para que el nombre respire */
+    .velo {
+        position: absolute;
+        z-index: 1;
+        inset: 0 0 auto;
+        height: 30%;
+        background: linear-gradient(
+            180deg,
+            rgba(255, 255, 255, 0.85) 0%,
+            rgba(255, 255, 255, 0) 100%
+        );
+        pointer-events: none;
+    }
+
+    .destellos {
+        position: absolute;
+        z-index: 1;
+        inset: 0;
+        pointer-events: none;
+    }
+
+    .destello {
+        position: absolute;
+        width: calc(1.1rem * var(--t));
+        aspect-ratio: 1;
+        translate: -50% -50%;
+        background: var(--plata);
+        clip-path: polygon(50% 0, 60% 40%, 100% 50%, 60% 60%, 50% 100%, 40% 60%, 0 50%, 40% 40%);
+        opacity: 0.7;
+    }
+
+    .destello.rojo {
+        background: var(--rojo);
     }
 
     .texto-superior {
@@ -53,7 +173,7 @@ const nombre = "Cielo Aryana";
 
     .frase {
         margin: 0 0 0.18em;
-        color: #181116;
+        color: var(--negro);
         font-family: "Ragilone Brush", cursive;
         font-size: clamp(1.65rem, 10vw, 2.8rem);
         font-weight: 400;
@@ -64,15 +184,56 @@ const nombre = "Cielo Aryana";
 
     h1 {
         margin: 0;
-        color: #b62d45;
         font-family: "Bebas Neue", Impact, sans-serif;
         font-size: clamp(2rem, 16vw, 4.25rem);
         font-weight: 400;
         letter-spacing: -0.035em;
         line-height: 0.88;
         white-space: nowrap;
-        -webkit-text-stroke: 1.2px #7f1d32;
-        text-shadow: 1px 1px 0 rgba(127, 29, 50, 0.25);
+        filter: drop-shadow(0 2px 1.5px rgba(0, 0, 0, 0.28));
+    }
+
+    /* Nombre en rojo liso */
+    .letra {
+        display: inline-block;
+        padding-inline: 0.01em;
+        color: var(--rojo);
+    }
+
+    .espacio {
+        display: inline-block;
+        width: 0.22em;
+    }
+
+    /* Adorno: dos líneas plateadas y un rombo rojo */
+    .adorno {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.6rem;
+        margin: 0.7rem auto 0;
+        width: 70%;
+    }
+
+    .linea {
+        flex: 1;
+        height: 1.5px;
+        background: var(--plata);
+    }
+
+    .linea.izquierda {
+        transform-origin: right center;
+    }
+
+    .linea.derecha {
+        transform-origin: left center;
+    }
+
+    .rombo {
+        width: 0.55rem;
+        aspect-ratio: 1;
+        background: var(--rojo);
+        transform: rotate(45deg);
     }
 
     @media (min-width: 700px) {
@@ -91,20 +252,117 @@ const nombre = "Cielo Aryana";
 
     document.addEventListener("DOMContentLoaded", () => {
         const seccion = document.getElementById("sobre-novios");
-        const frase = seccion?.querySelector(".frase");
-        const nombre = seccion?.querySelector("h1");
-        const reproductor = document.getElementById("reproductor-musical");
-        if (!seccion || !frase || !nombre || !reproductor || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+        if (!seccion || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
+        const capa = seccion.querySelector(".capa-fondo");
+        const fondo = seccion.querySelector(".fondo");
+        const frase = seccion.querySelector(".frase");
+        const letras = seccion.querySelectorAll(".letra");
+        const lineas = seccion.querySelectorAll(".linea");
+        const rombo = seccion.querySelector(".rombo");
+        const destellos = seccion.querySelectorAll(".destello");
+        const antorcha = seccion.querySelector(".antorcha");
+        const reproductor = document.getElementById("reproductor-musical");
+        if (!capa || !fondo || !frase || !letras.length || !rombo) return;
+
+        // Movimientos continuos: arrancan una sola vez, la primera vez que se ve la portada
+        let continuosActivos = false;
+        const iniciarContinuos = () => {
+            if (continuosActivos) return;
+            continuosActivos = true;
+
+            // El rombo rojo late suave
+            gsap.to(rombo, {
+                scale: 1.25,
+                duration: 1.4,
+                ease: "sine.inOut",
+                yoyo: true,
+                repeat: -1,
+            });
+
+            // La llama de la antorcha respira en rojo
+            if (antorcha) {
+                gsap.to(antorcha, {
+                    delay: 3.2,
+                    immediateRender: false,
+                    opacity: 0.45,
+                    scale: 0.9,
+                    duration: 1.8,
+                    ease: "sine.inOut",
+                    yoyo: true,
+                    repeat: -1,
+                });
+            }
+
+            // Destellos que titilan y giran, cada uno a su ritmo
+            destellos.forEach((destello) => {
+                gsap.timeline({ repeat: -1, delay: gsap.utils.random(0, 2.5), repeatDelay: gsap.utils.random(1, 3) })
+                    .fromTo(
+                        destello,
+                        { scale: 0, rotate: -45, opacity: 0 },
+                        { scale: 1, rotate: 0, opacity: 0.9, duration: 0.7, ease: "back.out(2)" }
+                    )
+                    .to(destello, { scale: 0, rotate: 45, opacity: 0, duration: 0.8, ease: "power2.in" }, "+=0.5");
+            });
+        };
+
+        // Entrada
         const entrada = gsap.timeline({
             scrollTrigger: {
                 trigger: seccion,
                 start: "top 78%",
                 toggleActions: "play none none reset",
             },
+            onStart: iniciarContinuos,
         });
-        entrada.fromTo(frase, { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.8, ease: "power2.out" });
-        entrada.fromTo(nombre, { opacity: 0, y: 22 }, { opacity: 1, y: 0, duration: 0.9, ease: "power2.out" }, "-=0.3");
-        entrada.fromTo(reproductor, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 1, ease: "power2.out" }, 0);
+
+        entrada
+            // Toda la imagen aparece con zoom: de grande y apagada a su tamaño
+            .fromTo(fondo, { scale: 1.4, opacity: 0 }, { scale: 1, opacity: 1, duration: 2.6, ease: "power3.out" }, 0)
+            .fromTo(antorcha, { opacity: 0 }, { opacity: 0.85, duration: 1, ease: "power2.out" }, 1.8)
+
+            .fromTo(
+                frase,
+                { clipPath: "inset(-20% 100% -20% 0%)", opacity: 1 },
+                { clipPath: "inset(-20% 0% -20% 0%)", duration: 1.1, ease: "power2.inOut" },
+                0.3
+            )
+            .fromTo(
+                letras,
+                // Entra suave desde la derecha, una sola vez, y queda quieto
+                { opacity: 0, x: 40, filter: "blur(4px)" },
+                {
+                    opacity: 1,
+                    x: 0,
+                    filter: "blur(0px)",
+                    duration: 1.4,
+                    ease: "power2.out",
+                    stagger: 0.07,
+                },
+                0.9
+            )
+            .fromTo(lineas, { scaleX: 0 }, { scaleX: 1, duration: 0.9, ease: "power2.out" }, 1.6)
+            .fromTo(
+                rombo,
+                { scale: 0, rotate: -135 },
+                { scale: 1, rotate: 45, duration: 0.8, ease: "back.out(2.2)" },
+                1.75
+            );
+
+        if (reproductor) {
+            entrada.fromTo(reproductor, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 1, ease: "power2.out" }, 0);
+        }
+
+        // Al bajar, el fondo se mueve un poco más lento que el texto (profundidad)
+        gsap.to(capa, {
+            yPercent: 2.5,
+            ease: "none",
+            scrollTrigger: {
+                trigger: seccion,
+                start: "top top",
+                end: "bottom top",
+                scrub: true,
+            },
+        });
     });
 </script>

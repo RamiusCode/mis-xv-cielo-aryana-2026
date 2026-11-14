@@ -1,14 +1,57 @@
+---
+import RamaMarco from "./RamaMarco.astro";
+const titulo = "Código de vestimenta";
+const sobreTitulo = "Código de";
+const letrasTitulo = Array.from("Vestimenta");
+
+// Destellos blancos en las esquinas, iguales a los de la dedicatoria
+const esquinaArriba = [
+    { x: 8, y: 8, t: 1.5 },
+    { x: 34, y: 20, t: 0.9 },
+    { x: 18, y: 42, t: 1.1 },
+    { x: 52, y: 6, t: 0.7 },
+    { x: 6, y: 66, t: 0.7 },
+    { x: 46, y: 50, t: 0.6 },
+    { x: 66, y: 32, t: 0.8 },
+];
+const esquinaAbajo = [
+    { x: 90, y: 90, t: 1.5 },
+    { x: 64, y: 78, t: 0.9 },
+    { x: 80, y: 56, t: 1.1 },
+    { x: 46, y: 92, t: 0.7 },
+    { x: 92, y: 32, t: 0.7 },
+    { x: 52, y: 48, t: 0.6 },
+    { x: 32, y: 66, t: 0.8 },
+];
+---
+
 <section id="codigo-vestimenta" class="vestimenta" aria-labelledby="titulo-vestimenta">
+    <div class="destellos destellos-arriba" aria-hidden="true">
+        {esquinaArriba.map((d) => <span class="destello" style={`left:${d.x}%;top:${d.y}%;--t:${d.t}`} />)}
+    </div>
+    <div class="destellos destellos-abajo" aria-hidden="true">
+        {esquinaAbajo.map((d) => <span class="destello" style={`left:${d.x}%;top:${d.y}%;--t:${d.t}`} />)}
+    </div>
+
     <div class="tarjeta" id="tarjeta-vestimenta">
-        <h2 id="titulo-vestimenta">Código de vestimenta</h2>
+        <span class="rombo" aria-hidden="true"></span>
+        <h2 id="titulo-vestimenta" aria-label={titulo}>
+            <span class="sobre-titulo" aria-hidden="true">{sobreTitulo}</span>
+            <span class="titulo-grande" aria-hidden="true">
+                {letrasTitulo.map((l) => <span class="letra">{l}</span>)}
+            </span>
+        </h2>
         <span class="detalle-rojo" aria-hidden="true"></span>
-        <img
-            class="imagen-codigo"
-            src="/imagenes/codigo.png"
-            alt="Ilustración del código de vestimenta"
-            loading="lazy"
-        />
+        <div class="caja-imagen">
+            <img
+                class="imagen-codigo"
+                src="/imagenes/codigo.png"
+                alt="Ilustración del código de vestimenta"
+                loading="lazy"
+            />
+        </div>
         <p class="formal">Formal</p>
+        <RamaMarco color="#c9ccd2" fondo="#050505" />
     </div>
 </section>
 
@@ -16,29 +59,44 @@
     .vestimenta {
         position: relative;
         z-index: 2;
+        isolation: isolate;
         width: 100%;
-        padding: 2.2rem 8%;
+        padding: 2.6rem 8%;
         overflow: hidden;
-        background: #fff;
-        color: #171518;
+        background-color: #050505;
+        color: #f1f2f4;
         text-align: center;
     }
 
+    /* Marco igual al de la dedicatoria y los padres */
     .tarjeta {
+        position: relative;
+        z-index: 1;
         display: flex;
         flex-direction: column;
         align-items: center;
         width: 100%;
         max-width: 23rem;
         margin: 0 auto;
-        padding: 1.35rem 1rem 1.2rem;
-        border: 1px solid #262326;
+        padding: 1.6rem 1rem 1.3rem;
+        border: 1px solid #c9ccd2;
+    }
+
+    .rombo {
+        position: absolute;
+        top: 0;
+        left: 50%;
+        width: 0.5rem;
+        aspect-ratio: 1;
+        translate: -50% -50%;
+        rotate: 45deg;
         background: #fff;
+        box-shadow: 0 0 0 3px #050505;
     }
 
     h2 {
         margin: 0;
-        color: #b72d43;
+        color: #fff;
         font-family: "Bebas Neue", Impact, sans-serif;
         font-size: clamp(2.15rem, 11vw, 3rem);
         font-weight: 400;
@@ -47,29 +105,84 @@
         text-transform: uppercase;
     }
 
+    /* Parte de arriba del título, en cursiva */
+    .sobre-titulo {
+        display: block;
+        margin-bottom: -0.15rem;
+        color: #fff;
+        font-family: "Ragilone Brush", cursive;
+        font-size: clamp(1.8rem, 9vw, 2.6rem);
+        font-weight: 400;
+        letter-spacing: 0;
+        line-height: 1.05;
+        text-transform: none;
+    }
+
+    .titulo-grande {
+        display: block;
+        white-space: nowrap;
+    }
+
+    .letra {
+        display: inline-block;
+    }
+
     .detalle-rojo {
         width: 2.5rem;
         height: 2px;
-        margin: 0.55rem auto 0.85rem;
-        background: #b72d43;
+        margin: 0.6rem auto 0.9rem;
+        background: #d5283f;
     }
 
+    .caja-imagen {
+        width: min(54%, 11rem);
+    }
+
+    /* El icono (dorado) se pasa a plateado: gris claro, sin fondo */
     .imagen-codigo {
         display: block;
-        width: min(54%, 11rem);
+        width: 100%;
         height: auto;
         object-fit: contain;
-        filter: grayscale(1) contrast(1.08);
-        mix-blend-mode: multiply;
+        filter: grayscale(1) brightness(1.6) contrast(1.05);
     }
 
     .formal {
         margin: 0.45rem 0 0;
-        color: #b72d43;
+        color: #d5283f;
         font-family: "Ragilone Brush", cursive;
         font-size: clamp(1.8rem, 9vw, 2.4rem);
         font-weight: 400;
         line-height: 1.1;
+    }
+
+    .destellos {
+        position: absolute;
+        z-index: 0;
+        width: 6.5rem;
+        height: 10rem;
+        pointer-events: none;
+        filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.65));
+    }
+
+    .destellos-arriba {
+        top: 0;
+        left: 0;
+    }
+
+    .destellos-abajo {
+        right: 0;
+        bottom: 0;
+    }
+
+    .destello {
+        position: absolute;
+        width: calc(0.95rem * var(--t));
+        aspect-ratio: 1;
+        translate: -50% -50%;
+        background: #fff;
+        clip-path: polygon(50% 0, 59% 41%, 100% 50%, 59% 59%, 50% 100%, 41% 59%, 0 50%, 41% 41%);
+        opacity: 0.9;
     }
 
     @media (min-width: 700px) {
@@ -86,31 +199,91 @@
 
     gsap.registerPlugin(ScrollTrigger);
 
+    const seccion = document.getElementById("codigo-vestimenta");
     const tarjeta = document.getElementById("tarjeta-vestimenta");
-    if (tarjeta && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+
+    if (seccion && tarjeta && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        const rombo = tarjeta.querySelector(".rombo");
+        const sobre = tarjeta.querySelector(".sobre-titulo");
+        const letrasTitulo = tarjeta.querySelectorAll(".titulo-grande .letra");
+        const linea = tarjeta.querySelector(".detalle-rojo");
+        const caja = tarjeta.querySelector(".caja-imagen");
+        const imagen = tarjeta.querySelector(".imagen-codigo");
+        const formal = tarjeta.querySelector(".formal");
+        const destellos = seccion.querySelectorAll(".destello");
+        const grupos = seccion.querySelectorAll(".destellos");
+
+        // Los destellos titilan solos, cada uno a su ritmo
+        let titilando = false;
+        const titilar = () => {
+            if (titilando) return;
+            titilando = true;
+            destellos.forEach((d) => {
+                gsap.timeline({ repeat: -1, delay: gsap.utils.random(0, 2), repeatDelay: gsap.utils.random(0.2, 1.4) })
+                    .to(d, { scale: 1.25, opacity: 1, rotate: 20, duration: 0.7, ease: "sine.inOut" })
+                    .to(d, { scale: 0.35, opacity: 0.25, rotate: 0, duration: 0.9, ease: "sine.inOut" });
+            });
+        };
+
         const entrada = gsap.timeline({
             scrollTrigger: {
-                trigger: tarjeta,
-                start: "top 82%",
+                trigger: seccion,
+                start: "top 80%",
                 toggleActions: "play none none reset",
             },
+            onStart: titilar,
         });
-        entrada.fromTo(tarjeta, { opacity: 0, x: 36, y: 8, scale: 0.98 }, {
-            opacity: 1, x: 0, y: 0, scale: 1, duration: 0.9, ease: "power3.out",
-        });
-        entrada.fromTo(tarjeta.querySelector("h2"), { opacity: 0, x: -15, y: 8 }, {
-            opacity: 1, x: 0, y: 0, duration: 0.55, ease: "power2.out",
-        }, 0);
-        entrada.fromTo(tarjeta.querySelector(".detalle-rojo"), {
-            opacity: 0, scaleX: 0, transformOrigin: "50% 50%",
-        }, {
-            opacity: 1, scaleX: 1, duration: 0.5, ease: "power2.out",
-        }, 0);
-        entrada.fromTo(tarjeta.querySelector(".imagen-codigo"), { opacity: 0, x: 18, y: 10, scale: 0.92 }, {
-            opacity: 1, x: 0, y: 0, scale: 1, duration: 0.75, ease: "power3.out",
-        }, 0);
-        entrada.fromTo(tarjeta.querySelector(".formal"), { opacity: 0, x: -14, y: 6 }, {
-            opacity: 1, x: 0, y: 0, duration: 0.55, ease: "power2.out",
-        }, 0);
+
+        entrada.fromTo(tarjeta, { opacity: 0, scale: 0.96 }, { opacity: 1, scale: 1, duration: 0.7, ease: "power2.out" }, 0);
+        entrada.fromTo(rombo, { scale: 0 }, { scale: 1, duration: 0.6, ease: "back.out(2.5)" }, 0.5);
+        entrada.fromTo(destellos, { opacity: 0, scale: 0 }, { opacity: 0.9, scale: 1, duration: 0.8, ease: "back.out(2)", stagger: 0.08 }, 0.2);
+
+        // Título: la parte cursiva se escribe y la grande entra letra por letra
+        if (sobre) {
+            entrada.fromTo(
+                sobre,
+                { clipPath: "inset(-20% 100% -20% 0%)" },
+                { clipPath: "inset(-20% 0% -20% 0%)", duration: 1, ease: "power2.inOut" },
+                0.6
+            );
+        }
+        entrada.fromTo(
+            letrasTitulo,
+            { opacity: 0, x: (i) => (i % 2 === 0 ? -32 : 32), filter: "blur(4px)" },
+            { opacity: 1, x: 0, filter: "blur(0px)", duration: 0.9, ease: "power2.out", stagger: 0.05 },
+            1.0
+        );
+
+        // Línea roja que se abre desde el centro
+        entrada.fromTo(linea, { scaleX: 0 }, { scaleX: 1, duration: 0.7, ease: "power2.out" }, 1.5);
+
+        // Ilustración: se abre desde el centro hacia los lados
+        entrada.fromTo(
+            imagen,
+            { clipPath: "inset(0% 50% 0% 50%)", opacity: 0, scale: 0.9 },
+            { clipPath: "inset(0% 0% 0% 0%)", opacity: 1, scale: 1, duration: 1.4, ease: "power3.out" },
+            1.7
+        );
+
+        // "Formal": se escribe de izquierda a derecha
+        entrada.fromTo(
+            formal,
+            { clipPath: "inset(-20% 100% -20% 0%)" },
+            { clipPath: "inset(-20% 0% -20% 0%)", duration: 1, ease: "power2.inOut" },
+            2.6
+        );
+
+        // PARALLAX: la ilustración y los destellos se mueven a distinta velocidad
+        const parallax = (objetivo: Element | null, desde: number, hasta: number) => {
+            if (!objetivo) return;
+            gsap.fromTo(
+                objetivo,
+                { yPercent: desde },
+                { yPercent: hasta, ease: "none", scrollTrigger: { trigger: seccion, start: "top bottom", end: "bottom top", scrub: 0.6 } }
+            );
+        };
+        parallax(caja, 10, -10);
+        parallax(grupos[0], 12, -12);
+        parallax(grupos[1], -12, 12);
     }
 </script>

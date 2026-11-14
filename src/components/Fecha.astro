@@ -2,10 +2,20 @@
     <img class="fondo-fecha" src="/imagenes/fondo2.png" alt="" />
 
     <p class="dia">20</p>
-    <h2 class="mes">NOVIEMBRE</h2>
+    <h2 class="mes" aria-label="Noviembre">
+        {
+            Array.from("NOVIEMBRE").map((l) => (
+                <span class="letra" aria-hidden="true">
+                    {l}
+                </span>
+            ))
+        }
+    </h2>
     <p class="anio">2026</p>
 
-    <img class="estatua" src="/imagenes/estatua.png" alt="Estatua de la Libertad" loading="lazy" />
+    <div class="capa-estatua">
+        <img class="estatua" src="/imagenes/estatua.png" alt="Estatua de la Libertad" loading="lazy" />
+    </div>
 </section>
 
 <style>
@@ -26,9 +36,9 @@
     .fondo-fecha {
         position: absolute;
         z-index: 0;
-        inset: 0;
+        inset: -8% 0;
         width: 100%;
-        height: 100%;
+        height: 116%;
         object-fit: cover;
         opacity: 0.16;
         filter: grayscale(1);
@@ -68,6 +78,10 @@
         text-shadow: none;
     }
 
+    .letra {
+        display: inline-block;
+    }
+
     .anio {
         z-index: 2;
         top: 27%;
@@ -80,15 +94,22 @@
         text-shadow: none;
     }
 
-    .estatua {
+    /* Capa de la estatua y sus destellos: se mueve junta con el parallax */
+    .capa-estatua {
+        position: absolute;
         z-index: 1;
-        left: 27%;
+        inset: 0;
+        pointer-events: none;
+    }
+
+    .estatua {
+        left: 16%;
         bottom: 4%;
         width: 78%;
         height: 70%;
         object-fit: contain;
         object-position: center bottom;
-        transform: translateX(-50%);
+        translate: -50% 0;
         filter: grayscale(1) brightness(1.25) contrast(1.08);
     }
 
@@ -107,22 +128,106 @@
 
     document.addEventListener("DOMContentLoaded", () => {
         const seccion = document.querySelector(".fecha-xv");
+        const fondo = seccion?.querySelector(".fondo-fecha");
         const dia = seccion?.querySelector(".dia");
         const mes = seccion?.querySelector(".mes");
         const anio = seccion?.querySelector(".anio");
+        const capa = seccion?.querySelector(".capa-estatua");
         const estatua = seccion?.querySelector(".estatua");
-        if (!seccion || !dia || !mes || !anio || !estatua || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+        if (!seccion || !fondo || !dia || !mes || !anio || !capa || !estatua) return;
+        if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
+        const letras = mes.querySelectorAll(".letra");
+
+        // Los números "corren" hasta su valor final y quedan fijos
+        const textoDia = dia.textContent ?? "";
+        const textoAnio = anio.textContent ?? "";
+        const diaFinal = Number(textoDia);
+        const anioFinal = Number(textoAnio);
+        const contador = { d: 0, a: anioFinal - 40 };
+        const pintarNumeros = () => {
+            dia.textContent = String(Math.round(contador.d));
+            anio.textContent = String(Math.round(contador.a));
+        };
+
+        let flotando: gsap.core.Tween | null = null;
+
+        // ENTRADA
         const entrada = gsap.timeline({
             scrollTrigger: {
                 trigger: seccion,
                 start: "top 78%",
                 toggleActions: "play none none reset",
             },
+            onStart: () => {
+                flotando?.kill();
+                contador.d = 0;
+                contador.a = anioFinal - 40;
+                pintarNumeros();
+            },
+            onReverseComplete: () => {
+                dia.textContent = textoDia;
+                anio.textContent = textoAnio;
+            },
         });
-        entrada.fromTo(dia, { opacity: 0, x: 20 }, { opacity: 1, x: 0, duration: 1.4, ease: "power2.out" }, 0);
-        entrada.fromTo(mes, { opacity: 0, x: -18 }, { opacity: 1, x: 0, duration: 1.35, ease: "power2.out" }, 0);
-        entrada.fromTo(anio, { opacity: 0, x: 18 }, { opacity: 1, x: 0, duration: 1.4, ease: "power2.out" }, 0);
-        entrada.fromTo(estatua, { opacity: 0, y: 24, scale: 0.99 }, { opacity: 1, y: 0, scale: 1, duration: 1.6, ease: "power2.out" }, 0);
+
+        // Fondo: aparece con un zoom suave
+        entrada.fromTo(fondo, { opacity: 0 }, { opacity: 0.16, duration: 2, ease: "power2.out" }, 0);
+
+        // Día: entra desde la derecha mientras cuenta hasta 20
+        entrada.fromTo(dia, { opacity: 0, x: 40 }, { opacity: 1, x: 0, duration: 1.5, ease: "power3.out" }, 0.1);
+        entrada.to(
+            contador,
+            { d: diaFinal, duration: 1.6, ease: "power2.out", onUpdate: pintarNumeros, onComplete: pintarNumeros },
+            0.1
+        );
+
+        // Mes: letra por letra desde la izquierda
+        entrada.fromTo(
+            letras,
+            { opacity: 0, x: -30, filter: "blur(4px)" },
+            { opacity: 1, x: 0, filter: "blur(0px)", duration: 1, ease: "power2.out", stagger: 0.07 },
+            0.4
+        );
+
+        // Año: entra desde la derecha mientras sube hasta 2026
+        entrada.fromTo(anio, { opacity: 0, x: 40 }, { opacity: 1, x: 0, duration: 1.5, ease: "power3.out" }, 0.8);
+        entrada.to(
+            contador,
+            { a: anioFinal, duration: 1.8, ease: "power2.out", onUpdate: pintarNumeros, onComplete: pintarNumeros },
+            0.8
+        );
+
+        // Estatua: se descubre de abajo hacia arriba, como si se encendiera
+        entrada.fromTo(
+            estatua,
+            { opacity: 0, y: 40, clipPath: "inset(100% 0% 0% 0%)" },
+            {
+                opacity: 0.6,
+                y: 0,
+                clipPath: "inset(0% 0% 0% 0%)",
+                duration: 2.2,
+                ease: "power3.out",
+                onComplete: () => {
+                    // Cuando termina de aparecer, flota muy despacio
+                    flotando?.kill();
+                    flotando = gsap.to(estatua, { y: -7, duration: 3.2, ease: "sine.inOut", yoyo: true, repeat: -1 });
+                },
+            },
+            0.3
+        );
+
+        // PARALLAX: cada capa se mueve a distinta velocidad al bajar
+        const parallax = (objetivo: Element, desde: gsap.TweenVars, hasta: gsap.TweenVars) =>
+            gsap.fromTo(objetivo, desde, {
+                ...hasta,
+                ease: "none",
+                scrollTrigger: { trigger: seccion, start: "top bottom", end: "bottom top", scrub: 0.6 },
+            });
+
+        parallax(capa, { yPercent: 3 }, { yPercent: -3 });
+        parallax(dia, { yPercent: -10 }, { yPercent: 14 });
+        parallax(mes, { yPercent: -6 }, { yPercent: 10 });
+        parallax(anio, { yPercent: -14 }, { yPercent: 18 });
     });
 </script>

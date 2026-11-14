@@ -1,21 +1,83 @@
-<section class="direccion-seccion" aria-labelledby="titulo-direccion">
-    <div class="tarjeta-direccion" id="tarjeta-direccion">
-        <h2 id="titulo-direccion">Recepción</h2>
+---
+import RamaMarco from "./RamaMarco.astro";
+const titulo = "Recepción";
+const salon = "Salón Los Robles";
+const calle = "Calle Cañada Strongest #1822";
+const referencia = "A media cuadra de la Plaza del Estudiante";
+const hora = "17:30";
 
-        <div class="pin" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none">
-                <path d="M19 10c0 5-7 12-7 12S5 15 5 10a7 7 0 1 1 14 0Z" />
-                <circle cx="12" cy="10" r="2.4" />
-            </svg>
+// Parte un texto en palabras y letras (las palabras no se cortan al bajar de renglón)
+const palabras = (texto: string) => texto.split(" ").map((p) => Array.from(p));
+---
+
+<section class="direccion-seccion" aria-labelledby="titulo-direccion">
+    <img class="fondo-direccion" src="/imagenes/fondo2.png" alt="" aria-hidden="true" loading="lazy" />
+
+    <div class="marco" id="tarjeta-direccion">
+        <span class="rombo" aria-hidden="true"></span>
+
+        <h2 id="titulo-direccion" aria-label={titulo}>
+            {
+                Array.from(titulo).map((letra) => (
+                    <span class="letra" aria-hidden="true">
+                        {letra}
+                    </span>
+                ))
+            }
+        </h2>
+
+        <div class="pin-caja" aria-hidden="true">
+            <span class="onda"></span>
+            <span class="onda"></span>
+            <div class="pin">
+                <svg viewBox="0 0 24 24" fill="none">
+                    <path d="M19 10c0 5-7 12-7 12S5 15 5 10a7 7 0 1 1 14 0Z" />
+                    <circle cx="12" cy="10" r="2.4" />
+                </svg>
+            </div>
         </div>
 
-        <p class="salon">Salón Los Robles</p>
-        <p class="calle">Calle Cañada Strongest #1822</p>
-        <p class="referencia">A media cuadra de la Plaza del Estudiante</p>
+        <p class="salon" aria-label={salon}>
+            {
+                palabras(salon).map((palabra) => (
+                    <span class="palabra" aria-hidden="true">
+                        {palabra.map((l) => (
+                            <span class="letra-texto">{l}</span>
+                        ))}
+                    </span>
+                ))
+            }
+        </p>
+        <p class="calle" aria-label={calle}>
+            {
+                palabras(calle).map((palabra) => (
+                    <span class="palabra" aria-hidden="true">
+                        {palabra.map((l) => (
+                            <span class="letra-texto">{l}</span>
+                        ))}
+                    </span>
+                ))
+            }
+        </p>
+        <p class="referencia" aria-label={referencia}>
+            {
+                palabras(referencia).map((palabra) => (
+                    <span class="palabra" aria-hidden="true">
+                        {palabra.map((l) => (
+                            <span class="letra-texto">{l}</span>
+                        ))}
+                    </span>
+                ))
+            }
+        </p>
 
         <div class="hora">
-            <span class="etiqueta-hora">HORA</span>
-            <span class="valor-hora">17:30</span>
+            <span class="linea-hora izquierda" aria-hidden="true"></span>
+            <div class="hora-texto">
+                <span class="etiqueta-hora">HORA</span>
+                <span class="valor-hora" data-final={hora}>{hora}</span>
+            </div>
+            <span class="linea-hora derecha" aria-hidden="true"></span>
         </div>
 
         <a
@@ -29,6 +91,7 @@
                 <path d="M7 17 17 7M8 7h9v9" />
             </svg>
         </a>
+        <RamaMarco color="#9a9da4" fondo="#fff" />
     </div>
 </section>
 
@@ -36,43 +99,56 @@
     .direccion-seccion {
         position: relative;
         z-index: 2;
+        isolation: isolate;
         width: 100%;
-        padding: 2.4rem 8%;
+        padding: 3rem 8%;
         overflow: hidden;
-        background: #fff;
+        background-color: #fff;
+        background-image: linear-gradient(#fff, #fff);
         color: #171518;
     }
 
-    .tarjeta-direccion {
-        position: relative;
+    /* Mismo fondo de la fecha, volteado, con parallax */
+    .fondo-direccion {
+        position: absolute;
+        z-index: 0;
+        inset: -8% 0;
         width: 100%;
-        max-width: 23rem;
+        max-width: none;
+        height: 116%;
+        object-fit: cover;
+        opacity: 0.16;
+        filter: grayscale(1);
+        transform: scaleX(-1);
+        pointer-events: none;
+    }
+
+    /* Marco igual al de la dedicatoria y los padres */
+    .marco {
+        position: relative;
+        z-index: 1;
+        width: 100%;
+        max-width: 22rem;
         margin: 0 auto;
-        padding: 1.5rem 1.2rem 1.35rem;
+        padding: 1.5rem 0.9rem 1.3rem;
         border: 1px solid #262326;
-        background: #fff;
+        background-color: rgba(255, 255, 255, 0.82);
         text-align: center;
     }
 
-    .tarjeta-direccion::before,
-    .tarjeta-direccion::after {
-        content: "";
+    .rombo {
         position: absolute;
-        left: 50%;
-        width: 2.6rem;
-        height: 2px;
-        background: #b72d43;
-        transform: translateX(-50%);
-    }
-
-    .tarjeta-direccion::before {
         top: 0;
+        left: 50%;
+        width: 0.5rem;
+        aspect-ratio: 1;
+        translate: -50% -50%;
+        rotate: 45deg;
+        background: #b72d43;
+        box-shadow: 0 0 0 3px #fff;
     }
 
-    .tarjeta-direccion::after {
-        bottom: 0;
-    }
-
+    /* Título: Bebas Neue en rojo, como el resto de los títulos */
     h2 {
         margin: 0;
         color: #b72d43;
@@ -82,12 +158,34 @@
         letter-spacing: 0.035em;
         line-height: 1;
         text-transform: uppercase;
+        white-space: nowrap;
+    }
+
+    .letra {
+        display: inline-block;
+    }
+
+    .pin-caja {
+        position: relative;
+        display: grid;
+        place-items: center;
+        width: 2.6rem;
+        height: 2.6rem;
+        margin: 0.5rem auto 0.55rem;
+    }
+
+    .onda {
+        position: absolute;
+        inset: 0;
+        border: 1px solid #b72d43;
+        border-radius: 50%;
+        opacity: 0;
     }
 
     .pin {
+        position: relative;
         display: grid;
         place-items: center;
-        margin: 0.45rem auto 0.65rem;
         color: #b72d43;
     }
 
@@ -98,32 +196,67 @@
         stroke-width: 1.6;
     }
 
-    .salon {
+    /* Textos: Cormorant Garamond en mayúsculas, igual que la dedicatoria y los padres */
+    .salon,
+    .calle,
+    .referencia {
         margin: 0;
-        color: #b72d43;
         font-family: "Cormorant Garamond", Georgia, serif;
-        font-size: clamp(1.45rem, 6vw, 1.75rem);
-        font-weight: 700;
-        line-height: 1.1;
+        font-size: clamp(0.82rem, 4vw, 1.05rem);
+        letter-spacing: 0.055em;
+        line-height: 1.28;
+        text-transform: uppercase;
+    }
+
+    .salon {
+        color: #171518;
+        font-weight: 600;
+        font-size: clamp(0.95rem, 4.8vw, 1.2rem);
     }
 
     .calle,
     .referencia {
-        margin: 0.25rem 0 0;
-        color: #454145;
-        font-family: "Cormorant Garamond", Georgia, serif;
-        font-size: clamp(1rem, 4.3vw, 1.2rem);
-        font-weight: 500;
-        line-height: 1.25;
+        margin-top: 0.25rem;
+        color: #171518;
+        font-weight: 400;
     }
 
+    .palabra {
+        display: inline-block;
+        white-space: nowrap;
+        margin-inline: 0.15em;
+    }
+
+    .letra-texto {
+        display: inline-block;
+    }
+
+    /* Hora en Bebas Neue, entre dos líneas rojas */
     .hora {
+        display: flex;
+        align-items: center;
+        gap: 0.9rem;
+        margin: 1.1rem 0 1rem;
+    }
+
+    .linea-hora {
+        flex: 1;
+        height: 1px;
+        background: #b72d43;
+    }
+
+    .linea-hora.izquierda {
+        transform-origin: right center;
+    }
+
+    .linea-hora.derecha {
+        transform-origin: left center;
+    }
+
+    .hora-texto {
         display: flex;
         flex-direction: column;
         align-items: center;
-        margin: 1rem 0 0.95rem;
-        padding-top: 0.7rem;
-        border-top: 1px solid #dedbdd;
     }
 
     .etiqueta-hora {
@@ -138,11 +271,7 @@
         font-family: "Bebas Neue", Impact, sans-serif;
         font-size: 2rem;
         line-height: 1;
-    }
-
-    .valor-hora small {
-        color: #9d263c;
-        font-size: 0.58em;
+        font-variant-numeric: tabular-nums;
     }
 
     .boton-ubicacion {
@@ -174,6 +303,7 @@
 
     .boton-ubicacion:hover {
         background: #b72d43;
+        border-color: #b72d43;
         color: #fff;
     }
 
@@ -202,31 +332,114 @@
 
     gsap.registerPlugin(ScrollTrigger);
 
-    const tarjeta = document.getElementById("tarjeta-direccion");
-    if (tarjeta && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    const seccion = document.querySelector<HTMLElement>(".direccion-seccion");
+    const marco = document.getElementById("tarjeta-direccion");
+
+    if (seccion && marco && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        const fondo = seccion.querySelector(".fondo-direccion");
+        const rombo = marco.querySelector(".rombo");
+        const letrasTitulo = marco.querySelectorAll(".letra");
+        const pin = marco.querySelector(".pin");
+        const ondas = marco.querySelectorAll(".onda");
+        const lineasTexto = [".salon", ".calle", ".referencia"].map((s) => marco.querySelectorAll(`${s} .letra-texto`));
+        const lineasHora = marco.querySelectorAll(".linea-hora");
+        const etiquetaHora = marco.querySelector(".etiqueta-hora");
+        const valorHora = marco.querySelector<HTMLElement>(".valor-hora");
+        const boton = marco.querySelector(".boton-ubicacion");
+
+        const horaFinal = valorHora?.dataset.final ?? "17:30";
+        const [hFinal, mFinal] = horaFinal.split(":").map(Number);
+        const contador = { p: 0 };
+        const pintarHora = () => {
+            if (!valorHora) return;
+            const h = String(Math.round(hFinal * contador.p)).padStart(2, "0");
+            const m = String(Math.round(mFinal * contador.p)).padStart(2, "0");
+            valorHora.textContent = `${h}:${m}`;
+        };
+
+        // Ondas del pin: suaves, una detrás de otra
+        let ondasActivas: gsap.core.Timeline[] = [];
+        const iniciarOndas = () => {
+            ondasActivas.forEach((t) => t.kill());
+            ondasActivas = Array.from(ondas).map((onda, i) =>
+                gsap
+                    .timeline({ repeat: -1, delay: i * 1.3 })
+                    .fromTo(onda, { scale: 0.6, opacity: 0.6 }, { scale: 2, opacity: 0, duration: 2.6, ease: "power1.out" })
+            );
+        };
+
         const entrada = gsap.timeline({
             scrollTrigger: {
-                trigger: tarjeta,
-                start: "top 82%",
+                trigger: seccion,
+                start: "top 72%",
                 toggleActions: "play none none reset",
             },
+            onStart: () => {
+                contador.p = 0;
+                pintarHora();
+            },
+            onReverseComplete: () => {
+                ondasActivas.forEach((t) => t.kill());
+                if (valorHora) valorHora.textContent = horaFinal;
+            },
         });
-        entrada.fromTo(tarjeta, { opacity: 0, x: -36, y: 8, scale: 0.98 }, {
-            opacity: 1, x: 0, y: 0, scale: 1, duration: 0.95, ease: "power3.out",
+
+        // Fondo: zoom suave
+        if (fondo) entrada.fromTo(fondo, { opacity: 0 }, { opacity: 0.16, duration: 2, ease: "power2.out" }, 0);
+
+        // Marco y rombo
+        entrada.fromTo(marco, { opacity: 0, scale: 0.96 }, { opacity: 1, scale: 1, duration: 0.7, ease: "power2.out" }, 0);
+        entrada.fromTo(rombo, { scale: 0 }, { scale: 1, duration: 0.6, ease: "back.out(2.5)" }, 0.5);
+
+        // Título: letra por letra desde la derecha, como en la fecha
+        entrada.fromTo(
+            letrasTitulo,
+            { opacity: 0, x: 34, filter: "blur(4px)" },
+            { opacity: 1, x: 0, filter: "blur(0px)", duration: 1, ease: "power2.out", stagger: 0.06 },
+            0.6
+        );
+
+        // Pin: baja con rebote y salen las ondas
+        entrada.fromTo(
+            pin,
+            { y: -40, opacity: 0 },
+            { y: 0, opacity: 1, duration: 0.9, ease: "bounce.out", onComplete: iniciarOndas },
+            1.3
+        );
+
+        // Textos: cada renglón entra desde un lado distinto, letra por letra
+        lineasTexto.forEach((letras, i) => {
+            entrada.fromTo(
+                letras,
+                { opacity: 0, x: i % 2 === 0 ? -30 : 30 },
+                { opacity: 1, x: 0, duration: 0.9, ease: "power2.out", stagger: 0.03 },
+                1.7 + i * 0.4
+            );
         });
-        entrada.fromTo(tarjeta.querySelector("h2"), { opacity: 0, x: 16, y: 8 }, {
-            opacity: 1, x: 0, y: 0, duration: 0.6, ease: "power2.out",
-        }, 0);
-        entrada.fromTo(tarjeta.querySelector(".pin"), { opacity: 0, x: -12, scale: 0.76, y: 5 }, {
-            opacity: 1, x: 0, scale: 1, y: 0, duration: 0.55, ease: "back.out(1.5)",
-        }, 0);
-        entrada.fromTo(tarjeta.querySelectorAll(".salon, .calle, .referencia, .hora"), {
-            opacity: 0, x: (index) => index % 2 === 0 ? -14 : 14, y: 7,
-        }, {
-            opacity: 1, x: 0, y: 0, duration: 0.55, ease: "power2.out",
-        }, 0);
-        entrada.fromTo(tarjeta.querySelector(".boton-ubicacion"), { opacity: 0, x: 16, y: 8, scale: 0.97 }, {
-            opacity: 1, x: 0, y: 0, scale: 1, duration: 0.55, ease: "power2.out",
-        }, 0);
+
+        // Hora: las líneas se abren y los números corren hasta 17:30
+        entrada.fromTo(lineasHora, { scaleX: 0 }, { scaleX: 1, duration: 0.9, ease: "power2.out" }, 2.8);
+        entrada.fromTo(etiquetaHora, { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" }, 2.9);
+        entrada.fromTo(valorHora, { opacity: 0 }, { opacity: 1, duration: 0.4 }, 2.9);
+        entrada.to(
+            contador,
+            { p: 1, duration: 1.5, ease: "power2.out", onUpdate: pintarHora, onComplete: pintarHora },
+            2.9
+        );
+
+        // Botón
+        entrada.fromTo(boton, { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.7, ease: "power2.out" }, 3.3);
+
+        // PARALLAX: el fondo se mueve más lento que el marco
+        const parallax = (objetivo: Element | null, desde: number, hasta: number) => {
+            if (!objetivo) return;
+            gsap.fromTo(
+                objetivo,
+                { yPercent: desde },
+                { yPercent: hasta, ease: "none", scrollTrigger: { trigger: seccion, start: "top bottom", end: "bottom top", scrub: 0.6 } }
+            );
+        };
+        parallax(fondo, -6, 6);
+        parallax(marco, 3, -3);
     }
 </script>

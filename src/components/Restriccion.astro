@@ -1,0 +1,336 @@
+---
+import RamaMarco from "./RamaMarco.astro";
+const titulo = "Solo para adultos";
+const sobreTitulo = "Solo para";
+const letrasTitulo = Array.from("Adultos");
+const mensaje = "Los niños se quedan en casa";
+const gracias = "Gracias por tu comprensión";
+
+// Parte un texto en palabras y letras (las palabras no se cortan al bajar de renglón)
+const palabras = (texto: string) => texto.split(" ").map((p) => Array.from(p));
+
+// Destellos blancos en las esquinas, iguales a los de la dedicatoria
+const esquinaArriba = [
+    { x: 8, y: 8, t: 1.5 },
+    { x: 34, y: 20, t: 0.9 },
+    { x: 18, y: 42, t: 1.1 },
+    { x: 52, y: 6, t: 0.7 },
+    { x: 6, y: 66, t: 0.7 },
+    { x: 46, y: 50, t: 0.6 },
+    { x: 66, y: 32, t: 0.8 },
+];
+const esquinaAbajo = [
+    { x: 90, y: 90, t: 1.5 },
+    { x: 64, y: 78, t: 0.9 },
+    { x: 80, y: 56, t: 1.1 },
+    { x: 46, y: 92, t: 0.7 },
+    { x: 92, y: 32, t: 0.7 },
+    { x: 52, y: 48, t: 0.6 },
+    { x: 32, y: 66, t: 0.8 },
+];
+---
+
+<section class="restriccion" id="seccion-restriccion" aria-labelledby="titulo-restriccion">
+    <div class="destellos destellos-arriba" aria-hidden="true">
+        {esquinaArriba.map((d) => <span class="destello" style={`left:${d.x}%;top:${d.y}%;--t:${d.t}`} />)}
+    </div>
+    <div class="destellos destellos-abajo" aria-hidden="true">
+        {esquinaAbajo.map((d) => <span class="destello" style={`left:${d.x}%;top:${d.y}%;--t:${d.t}`} />)}
+    </div>
+
+    <div class="marco" id="marco-restriccion">
+        <span class="rombo" aria-hidden="true"></span>
+
+        <h2 id="titulo-restriccion" aria-label={titulo}>
+            <span class="sobre-titulo" aria-hidden="true">{sobreTitulo}</span>
+            <span class="titulo-grande" aria-hidden="true">
+                {letrasTitulo.map((l) => <span class="letra">{l}</span>)}
+            </span>
+        </h2>
+
+        <p class="mensaje" aria-label={mensaje}>
+            {
+                palabras(mensaje).map((palabra) => (
+                    <span class="palabra" aria-hidden="true">
+                        {palabra.map((l) => (
+                            <span class="letra-texto">{l}</span>
+                        ))}
+                    </span>
+                ))
+            }
+        </p>
+
+        <div class="adorno" aria-hidden="true">
+            <span class="linea izquierda"></span>
+            <span class="rombo-chico"></span>
+            <span class="linea derecha"></span>
+        </div>
+
+        <p class="gracias">{gracias}</p>
+        <RamaMarco color="#c9ccd2" fondo="#050505" />
+    </div>
+</section>
+
+<style>
+    .restriccion {
+        position: relative;
+        z-index: 2;
+        isolation: isolate;
+        display: grid;
+        place-items: center;
+        width: 100%;
+        overflow: hidden;
+        padding: 2.8rem 8%;
+        background-color: #050505;
+        color: #f1f2f4;
+        text-align: center;
+    }
+
+    /* Marco igual al de la dedicatoria y los padres */
+    .marco {
+        position: relative;
+        z-index: 1;
+        width: 100%;
+        max-width: 22rem;
+        padding: 1.6rem 1rem 1.4rem;
+        border: 1px solid #c9ccd2;
+    }
+
+    .rombo {
+        position: absolute;
+        top: 0;
+        left: 50%;
+        width: 0.5rem;
+        aspect-ratio: 1;
+        translate: -50% -50%;
+        rotate: 45deg;
+        background: #fff;
+        box-shadow: 0 0 0 3px #050505;
+    }
+
+    h2 {
+        margin: 0;
+        color: #fff;
+        font-family: "Bebas Neue", Impact, sans-serif;
+        font-size: clamp(2.5rem, 13vw, 3.6rem);
+        font-weight: 400;
+        letter-spacing: 0.045em;
+        line-height: 1;
+        text-transform: uppercase;
+        white-space: nowrap;
+    }
+
+    .letra {
+        display: inline-block;
+    }
+
+    /* Parte de arriba del título, en cursiva */
+    .sobre-titulo {
+        display: block;
+        margin-bottom: -0.15rem;
+        color: #fff;
+        font-family: "Ragilone Brush", cursive;
+        font-size: clamp(1.8rem, 9vw, 2.6rem);
+        font-weight: 400;
+        letter-spacing: 0;
+        line-height: 1.05;
+        text-transform: none;
+    }
+
+    .titulo-grande {
+        display: block;
+        white-space: nowrap;
+    }
+
+    /* Texto: Cormorant Garamond en mayúsculas, igual que la dedicatoria */
+    .mensaje {
+        margin: 1rem 0 0;
+        color: #fff;
+        font-family: "Cormorant Garamond", Georgia, serif;
+        font-size: clamp(1rem, 5vw, 1.3rem);
+        font-weight: 600;
+        letter-spacing: 0.055em;
+        line-height: 1.25;
+        text-transform: uppercase;
+    }
+
+    .palabra {
+        display: inline-block;
+        white-space: nowrap;
+        margin-inline: 0.15em;
+    }
+
+    .letra-texto {
+        display: inline-block;
+    }
+
+    .adorno {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.6rem;
+        width: 55%;
+        margin: 0.9rem auto 0.7rem;
+    }
+
+    .linea {
+        flex: 1;
+        height: 1px;
+        background: #c9ccd2;
+    }
+
+    .linea.izquierda {
+        transform-origin: right center;
+    }
+
+    .linea.derecha {
+        transform-origin: left center;
+    }
+
+    .rombo-chico {
+        width: 0.45rem;
+        aspect-ratio: 1;
+        rotate: 45deg;
+        background: #d5283f;
+    }
+
+    .gracias {
+        margin: 0;
+        color: #d5283f;
+        font-family: "Ragilone Brush", cursive;
+        font-size: clamp(1.6rem, 8vw, 2.1rem);
+        font-weight: 400;
+        line-height: 1.1;
+    }
+
+    .destellos {
+        position: absolute;
+        z-index: 0;
+        width: 6.5rem;
+        height: 10rem;
+        pointer-events: none;
+        filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.65));
+    }
+
+    .destellos-arriba {
+        top: 0;
+        left: 0;
+    }
+
+    .destellos-abajo {
+        right: 0;
+        bottom: 0;
+    }
+
+    .destello {
+        position: absolute;
+        width: calc(0.95rem * var(--t));
+        aspect-ratio: 1;
+        translate: -50% -50%;
+        background: #fff;
+        clip-path: polygon(50% 0, 59% 41%, 100% 50%, 59% 59%, 50% 100%, 41% 59%, 0 50%, 41% 41%);
+        opacity: 0.9;
+    }
+
+    @media (min-width: 700px) {
+        .restriccion {
+            max-width: 31.5rem;
+            margin-inline: auto;
+        }
+    }
+</style>
+
+<script>
+    import { gsap } from "gsap";
+    import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+    gsap.registerPlugin(ScrollTrigger);
+
+    const seccion = document.getElementById("seccion-restriccion");
+    const marco = document.getElementById("marco-restriccion");
+
+    if (seccion && marco && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        const rombo = marco.querySelector(".rombo");
+        const sobre = marco.querySelector(".sobre-titulo");
+        const letrasTitulo = marco.querySelectorAll(".titulo-grande .letra");
+        const palabras = marco.querySelectorAll(".palabra");
+        const lineas = marco.querySelectorAll(".linea");
+        const romboChico = marco.querySelector(".rombo-chico");
+        const gracias = marco.querySelector(".gracias");
+        const destellos = seccion.querySelectorAll(".destello");
+        const grupos = seccion.querySelectorAll(".destellos");
+
+        // Los destellos titilan solos, cada uno a su ritmo
+        let titilando = false;
+        const titilar = () => {
+            if (titilando) return;
+            titilando = true;
+            destellos.forEach((d) => {
+                gsap.timeline({ repeat: -1, delay: gsap.utils.random(0, 2), repeatDelay: gsap.utils.random(0.2, 1.4) })
+                    .to(d, { scale: 1.25, opacity: 1, rotate: 20, duration: 0.7, ease: "sine.inOut" })
+                    .to(d, { scale: 0.35, opacity: 0.25, rotate: 0, duration: 0.9, ease: "sine.inOut" });
+            });
+        };
+
+        const entrada = gsap.timeline({
+            scrollTrigger: {
+                trigger: seccion,
+                start: "top 78%",
+                toggleActions: "play none none reset",
+            },
+            onStart: titilar,
+        });
+
+        entrada.fromTo(marco, { opacity: 0, scale: 0.96 }, { opacity: 1, scale: 1, duration: 0.7, ease: "power2.out" }, 0);
+        entrada.fromTo(rombo, { scale: 0 }, { scale: 1, duration: 0.6, ease: "back.out(2.5)" }, 0.5);
+        entrada.fromTo(destellos, { opacity: 0, scale: 0 }, { opacity: 0.9, scale: 1, duration: 0.8, ease: "back.out(2)", stagger: 0.08 }, 0.2);
+
+        // Título: "Solo para" se escribe a mano y ADULTOS entra letra por letra
+        if (sobre) {
+            entrada.fromTo(
+                sobre,
+                { clipPath: "inset(-20% 100% -20% 0%)" },
+                { clipPath: "inset(-20% 0% -20% 0%)", duration: 1, ease: "power2.inOut" },
+                0.6
+            );
+        }
+        entrada.fromTo(
+            letrasTitulo,
+            { opacity: 0, x: (i) => (i % 2 === 0 ? -32 : 32), filter: "blur(4px)" },
+            { opacity: 1, x: 0, filter: "blur(0px)", duration: 0.9, ease: "power2.out", stagger: 0.06 },
+            1.0
+        );
+
+        // Mensaje: cada palabra entra desde un lado distinto, letra por letra
+        palabras.forEach((palabra, i) => {
+            entrada.fromTo(
+                palabra.querySelectorAll(".letra-texto"),
+                { opacity: 0, x: i % 2 === 0 ? -30 : 30 },
+                { opacity: 1, x: 0, duration: 0.9, ease: "power2.out", stagger: 0.035 },
+                1.9 + i * 0.15
+            );
+        });
+
+        // Adorno y frase final
+        entrada.fromTo(lineas, { scaleX: 0 }, { scaleX: 1, duration: 0.8, ease: "power2.out" }, 2.7);
+        entrada.fromTo(romboChico, { scale: 0 }, { scale: 1, duration: 0.6, ease: "back.out(2.5)" }, 2.85);
+        entrada.fromTo(
+            gracias,
+            { clipPath: "inset(-20% 100% -20% 0%)" },
+            { clipPath: "inset(-20% 0% -20% 0%)", duration: 1.1, ease: "power2.inOut" },
+            3.0
+        );
+
+        // PARALLAX: la señal y los destellos se mueven a distinta velocidad
+        const parallax = (objetivo: Element | null, desde: number, hasta: number) => {
+            if (!objetivo) return;
+            gsap.fromTo(
+                objetivo,
+                { yPercent: desde },
+                { yPercent: hasta, ease: "none", scrollTrigger: { trigger: seccion, start: "top bottom", end: "bottom top", scrub: 0.6 } }
+            );
+        };
+        parallax(grupos[0], 12, -12);
+        parallax(grupos[1], -12, 12);
+    }
+</script>

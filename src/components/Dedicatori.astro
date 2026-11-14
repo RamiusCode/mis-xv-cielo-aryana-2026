@@ -1,18 +1,93 @@
+---
+import RamaMarco from "./RamaMarco.astro";
+// Dedicatoria: texto en negro con letras que entran desde cada lado y
+// destellos que titilan en las esquinas (donde antes estaba la imagen de puntos).
+const saludo = "HEY UPPER EAST SIDERS...";
+const lineas = [
+    "HA LLEGADO EL MOMENTO",
+    "DE CELEBRAR MIS XV.",
+    "¿ESTÁS LISTO PARA LA",
+    "NOCHE MÁS EXCLUSIVA?",
+];
+
+// Cada renglón entra desde un lado distinto: izquierda, derecha, izquierda...
+const renglones = [saludo, ...lineas];
+
+// Destellos: x/y en % dentro de cada esquina, t = tamaño, rojo = detalle rojo
+const esquinaArriba = [
+    { x: 8, y: 8, t: 1.5, rojo: false },
+    { x: 34, y: 20, t: 0.9, rojo: false },
+    { x: 18, y: 42, t: 1.1, rojo: false },
+    { x: 52, y: 6, t: 0.7, rojo: false },
+    { x: 6, y: 66, t: 0.7, rojo: false },
+    { x: 46, y: 50, t: 0.6, rojo: false },
+    { x: 66, y: 32, t: 0.8, rojo: false },
+];
+const esquinaAbajo = [
+    { x: 90, y: 90, t: 1.5, rojo: false },
+    { x: 64, y: 78, t: 0.9, rojo: false },
+    { x: 80, y: 56, t: 1.1, rojo: false },
+    { x: 46, y: 92, t: 0.7, rojo: false },
+    { x: 92, y: 32, t: 0.7, rojo: false },
+    { x: 52, y: 48, t: 0.6, rojo: false },
+    { x: 32, y: 66, t: 0.8, rojo: false },
+];
+---
+
 <section class="dedicatori" aria-label="Dedicatoria">
-    <div class="puntos-entrada puntos-izquierda" aria-hidden="true">
-        <img class="puntos puntos-arriba" src="/imagenes/puntos.png" alt="" />
+    <div class="destellos destellos-arriba" aria-hidden="true">
+        {
+            esquinaArriba.map((d) => (
+                <span
+                    class:list={["destello", { rojo: d.rojo }]}
+                    style={`left:${d.x}%;top:${d.y}%;--t:${d.t}`}
+                />
+            ))
+        }
     </div>
+
     <div class="marco-texto">
-        <p class="saludo">HEY UPPER EAST SIDERS...</p>
-        <p class="mensaje">
-            HA LLEGADO EL MOMENTO<br />
-            DE CELEBRAR MIS XV.<br />
-            ¿ESTÁS LISTO PARA LA<br />
-            NOCHE MÁS EXCLUSIVA?
+        <span class="rombo" aria-hidden="true"></span>
+        <p class="saludo" aria-label={saludo}>
+            {
+                Array.from(saludo).map((l) =>
+                    l === " " ? (
+                        <span class="espacio" aria-hidden="true" />
+                    ) : (
+                        <span class="letra" aria-hidden="true">
+                            {l}
+                        </span>
+                    )
+                )
+            }
         </p>
+        <p class="mensaje" aria-label={lineas.join(" ")}>
+            {
+                lineas.map((linea) => (
+                    <span class="renglon" aria-hidden="true">
+                        {Array.from(linea).map((l) =>
+                            l === " " ? (
+                                <span class="espacio" />
+                            ) : (
+                                <span class="letra">{l}</span>
+                            )
+                        )}
+                    </span>
+                ))
+            }
+        </p>
+        <RamaMarco color="#c9ccd2" fondo="#050505" />
     </div>
-    <div class="puntos-entrada puntos-derecha" aria-hidden="true">
-        <img class="puntos puntos-abajo" src="/imagenes/puntos.png" alt="" />
+
+    <div class="destellos destellos-abajo" aria-hidden="true">
+        {
+            esquinaAbajo.map((d) => (
+                <span
+                    class:list={["destello", { rojo: d.rojo }]}
+                    style={`left:${d.x}%;top:${d.y}%;--t:${d.t}`}
+                />
+            ))
+        }
     </div>
 </section>
 
@@ -27,8 +102,8 @@
         min-height: 15rem;
         overflow: hidden;
         padding: 2.4rem 10%;
-        background: #050505;
-        color: #e9e5e4;
+        background-color: #050505;
+        color: #f1f2f4;
     }
 
     .marco-texto {
@@ -37,8 +112,21 @@
         width: 100%;
         max-width: 22rem;
         padding: 0.8rem 0.6rem 0.75rem;
-        border: 1px solid rgba(245, 242, 238, 0.9);
+        border: 1px solid #c9ccd2;
         text-align: center;
+    }
+
+    /* Rombo rojo sobre el borde de arriba */
+    .rombo {
+        position: absolute;
+        top: 0;
+        left: 50%;
+        width: 0.5rem;
+        aspect-ratio: 1;
+        translate: -50% -50%;
+        rotate: 45deg;
+        background: #fff;
+        box-shadow: 0 0 0 3px #050505;
     }
 
     .saludo,
@@ -61,40 +149,57 @@
         line-height: 1.2;
     }
 
-    .puntos-entrada {
-        position: absolute;
-        z-index: 0;
-        width: 6rem;
-        height: 10rem;
-        pointer-events: none;
+    .renglon {
+        display: block;
+        white-space: nowrap;
     }
 
-    .puntos-izquierda {
+    /* Letras con brillo plateado */
+    .letra {
+        display: inline-block;
+        color: #fff;
+        text-shadow:
+            0 0 4px rgba(255, 255, 255, 0.75),
+            0 0 10px rgba(201, 204, 210, 0.55);
+    }
+
+    .espacio {
+        display: inline-block;
+        width: 0.3em;
+    }
+
+    /* Destellos en las esquinas, en lugar de la imagen de puntos */
+    .destellos {
+        position: absolute;
+        z-index: 0;
+        width: 6.5rem;
+        height: 10rem;
+        pointer-events: none;
+        filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.65));
+    }
+
+    .destellos-arriba {
         top: 0;
         left: 0;
     }
 
-    .puntos-derecha {
+    .destellos-abajo {
         right: 0;
         bottom: 0;
     }
 
-    .puntos {
+    .destello {
         position: absolute;
-        inset: 0;
-        width: 100%;
-        height: 100%;
-        object-fit: contain;
-        opacity: 0.95;
+        width: calc(0.95rem * var(--t));
+        aspect-ratio: 1;
+        translate: -50% -50%;
+        background: #fff;
+        clip-path: polygon(50% 0, 59% 41%, 100% 50%, 59% 59%, 50% 100%, 41% 59%, 0 50%, 41% 41%);
+        opacity: 0.9;
     }
 
-    .puntos-arriba {
-        object-position: right top;
-        transform: rotateY(180deg);
-    }
-
-    .puntos-abajo {
-        object-position: right top;
+    .destello.rojo {
+        background: #fff;
     }
 
     @media (min-width: 700px) {
@@ -114,10 +219,28 @@
     document.addEventListener("DOMContentLoaded", () => {
         const seccion = document.querySelector(".dedicatori");
         const marco = seccion?.querySelector(".marco-texto");
-        const textos = seccion?.querySelectorAll(".saludo, .mensaje");
-        const izquierda = seccion?.querySelector(".puntos-izquierda");
-        const derecha = seccion?.querySelector(".puntos-derecha");
-        if (!seccion || !marco || !textos?.length || !izquierda || !derecha || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+        const rombo = seccion?.querySelector(".rombo");
+        const destellos = seccion?.querySelectorAll(".destello");
+        const grupos = seccion
+            ? [seccion.querySelector(".saludo"), ...Array.from(seccion.querySelectorAll(".renglon"))]
+            : [];
+        if (!seccion || !marco || !rombo || !destellos?.length || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+        // Los destellos titilan solos, cada uno a su ritmo
+        let titilando = false;
+        const titilar = () => {
+            if (titilando) return;
+            titilando = true;
+            destellos.forEach((d) => {
+                gsap.timeline({
+                    repeat: -1,
+                    delay: gsap.utils.random(0, 2),
+                    repeatDelay: gsap.utils.random(0.2, 1.4),
+                })
+                    .to(d, { scale: 1.25, opacity: 1, rotate: 20, duration: 0.7, ease: "sine.inOut" })
+                    .to(d, { scale: 0.35, opacity: 0.25, rotate: 0, duration: 0.9, ease: "sine.inOut" });
+            });
+        };
 
         const entrada = gsap.timeline({
             scrollTrigger: {
@@ -125,10 +248,29 @@
                 start: "top 82%",
                 toggleActions: "play none none reset",
             },
+            onStart: titilar,
         });
-        entrada.fromTo(izquierda, { opacity: 0, x: -64 }, { opacity: 1, x: 0, duration: 1, ease: "power3.out" }, 0);
-        entrada.fromTo(derecha, { opacity: 0, x: 64 }, { opacity: 1, x: 0, duration: 1, ease: "power3.out" }, 0);
-        entrada.fromTo(marco, { opacity: 0, scale: 0.96 }, { opacity: 1, scale: 1, duration: 0.65, ease: "power2.out" }, 0.22);
-        entrada.fromTo(textos, { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.7, stagger: 0.22, ease: "power2.out" }, 0.4);
+
+        entrada.fromTo(marco, { opacity: 0, scale: 0.96 }, { opacity: 1, scale: 1, duration: 0.65, ease: "power2.out" }, 0);
+        entrada.fromTo(rombo, { scale: 0 }, { scale: 1, duration: 0.6, ease: "back.out(2.5)" }, 0.5);
+        entrada.fromTo(
+            destellos,
+            { opacity: 0, scale: 0 },
+            { opacity: 0.9, scale: 1, duration: 0.8, ease: "back.out(2)", stagger: 0.08 },
+            0.2
+        );
+
+        // Cada renglón entra desde un lado distinto, letra por letra
+        grupos.forEach((grupo, i) => {
+            if (!grupo) return;
+            const letras = grupo.querySelectorAll(".letra");
+            const desdeIzquierda = i % 2 === 0;
+            entrada.fromTo(
+                letras,
+                { opacity: 0, x: desdeIzquierda ? -34 : 34 },
+                { opacity: 1, x: 0, duration: 0.9, ease: "power2.out", stagger: 0.035 },
+                0.6 + i * 0.35
+            );
+        });
     });
 </script>

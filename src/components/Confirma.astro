@@ -3,22 +3,58 @@ const telefono = "59169983473";
 const mensaje =
     "Me complace confirmar mi asistencia a los XV años de Cielo Aryana, que se celebrarán el 20 de noviembre de 2026. Estaré sin falta. Muchas gracias.";
 const enlaceConfirmacion = `https://wa.me/${telefono}?text=${encodeURIComponent(mensaje)}`;
+
+const sobreTitulo = "Confirmación de";
+const titulo = "Asistencia";
+const lineas = [
+    "QUIERO COMPARTIR ESTE MOMENTO TAN ESPECIAL CONTIGO.",
+    "PARA AYUDAR A ORGANIZAR, CONFIRMA TU ASISTENCIA.",
+];
 ---
 
-<section class="confirmacion" aria-labelledby="titulo-confirmacion">
-    <img class="ilustracion-ciudad" src="/imagenes/fondo4.png" alt="Estatua de la Libertad y ciudad de Nueva York" loading="lazy" />
+<section class="confirmacion" id="seccion-confirmacion" aria-labelledby="titulo-confirmacion">
+    <img class="fondo-confirmacion" src="/imagenes/fondo2.png" alt="" aria-hidden="true" loading="lazy" />
 
     <div class="contenido-confirmacion" id="contenido-confirmacion">
-        <p class="sobre-titulo">Confirmación de</p>
-        <h2 id="titulo-confirmacion">Asistencia</h2>
+        <p class="sobre-titulo">{sobreTitulo}</p>
+
+        <h2 id="titulo-confirmacion" aria-label={titulo}>
+            {
+                Array.from(titulo).map((letra) => (
+                    <span class="mascara" aria-hidden="true">
+                        <span class="letra">{letra}</span>
+                    </span>
+                ))
+            }
+        </h2>
+
+        <div class="adorno" aria-hidden="true">
+            <span class="linea izquierda"></span>
+            <span class="rombo"></span>
+            <span class="linea derecha"></span>
+        </div>
+
         <p class="mensaje-confirmacion">
-            QUIERO COMPARTIR ESTE MOMENTO TAN ESPECIAL CONTIGO.<br />
-            PARA AYUDAR A ORGANIZAR, CONFIRMA TU ASISTENCIA.
+            {
+                lineas.map((linea) => (
+                    <span class="renglon">{linea}</span>
+                ))
+            }
         </p>
 
-        <a class="boton-confirmar" href={enlaceConfirmacion} target="_blank" rel="noopener noreferrer">
-            Confirmar aquí
-        </a>
+        <div class="caja-ciudad">
+            <img class="ilustracion-ciudad" src="/imagenes/fondo4.png" alt="Estatua de la Libertad y ciudad de Nueva York" loading="lazy" />
+        </div>
+
+        <div class="zona-boton">
+            <span class="onda" aria-hidden="true"></span>
+            <a class="boton-confirmar" href={enlaceConfirmacion} target="_blank" rel="noopener noreferrer">
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="m5 12.5 4.5 4.5L19 7.5" />
+                </svg>
+                Confirmar aquí
+            </a>
+        </div>
     </div>
 </section>
 
@@ -28,12 +64,27 @@ const enlaceConfirmacion = `https://wa.me/${telefono}?text=${encodeURIComponent(
         z-index: 2;
         isolation: isolate;
         width: 100%;
-        min-height: 34rem;
         overflow: hidden;
-        padding: 2rem 7% 12rem;
-        background: #fff;
+        padding: 2.4rem 7% 3rem;
+        background-color: #fff;
+        background-image: linear-gradient(#fff, #fff);
         color: #171518;
         text-align: center;
+    }
+
+    /* Imagen de la ciudad de fondo, muy tenue, igual que en la fecha y la dirección */
+    .fondo-confirmacion {
+        position: absolute;
+        z-index: 0;
+        inset: -8% 0;
+        width: 100%;
+        max-width: none;
+        height: 116%;
+        object-fit: cover;
+        object-position: 75% center;
+        opacity: 0.11;
+        filter: grayscale(1);
+        pointer-events: none;
     }
 
     .contenido-confirmacion {
@@ -61,6 +112,49 @@ const enlaceConfirmacion = `https://wa.me/${telefono}?text=${encodeURIComponent(
         letter-spacing: 0.035em;
         line-height: 0.95;
         text-transform: uppercase;
+        white-space: nowrap;
+    }
+
+    .mascara {
+        display: inline-block;
+        overflow: hidden;
+        vertical-align: top;
+        padding-top: 0.04em;
+    }
+
+    .letra {
+        display: inline-block;
+    }
+
+    /* Adorno: dos líneas plateadas y un rombo rojo */
+    .adorno {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.6rem;
+        width: 60%;
+        margin: 0.8rem auto 0.4rem;
+    }
+
+    .linea {
+        flex: 1;
+        height: 1px;
+        background: #9a9da4;
+    }
+
+    .linea.izquierda {
+        transform-origin: right center;
+    }
+
+    .linea.derecha {
+        transform-origin: left center;
+    }
+
+    .rombo {
+        width: 0.5rem;
+        aspect-ratio: 1;
+        rotate: 45deg;
+        background: #b72d43;
     }
 
     .mensaje-confirmacion {
@@ -74,27 +168,68 @@ const enlaceConfirmacion = `https://wa.me/${telefono}?text=${encodeURIComponent(
         line-height: 1.35;
     }
 
+    .renglon {
+        display: block;
+    }
+
+    .zona-boton {
+        position: relative;
+        display: inline-grid;
+        place-items: center;
+        margin-top: 1.6rem;
+    }
+
+    /* Aro plateado que se abre alrededor del botón de vez en cuando */
+    .onda {
+        position: absolute;
+        inset: 0;
+        border: 1px solid #8d9097;
+        border-radius: 999px;
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    /* Botón plateado, como los de la sección de regalo */
     .boton-confirmar {
+        position: relative;
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        min-width: 9rem;
-        margin-top: 1rem;
-        padding: 0.65rem 1.25rem;
-        border: 1px solid #b72d43;
+        gap: 0.5rem;
+        min-width: 10rem;
+        padding: 0.7rem 1.4rem;
+        border: 1px solid #8d9097;
         border-radius: 999px;
-        background: #171518;
-        color: #fff;
+        background: #c4c7cd;
+        color: #171518;
         font-family: "Cormorant Garamond", Georgia, serif;
-        font-size: 1rem;
+        font-size: 1.05rem;
         font-weight: 700;
+        letter-spacing: 0.01em;
         text-decoration: none;
-        transition: background-color 180ms ease, transform 180ms ease;
+        box-shadow: 0 2px 6px rgba(23, 21, 24, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.7);
+        transition: background-color 200ms ease, color 200ms ease, border-color 200ms ease, transform 200ms ease;
+    }
+
+    .boton-confirmar svg {
+        width: 1.1rem;
+        height: 1.1rem;
+        stroke: #b72d43;
+        stroke-width: 2.4;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        transition: stroke 200ms ease;
     }
 
     .boton-confirmar:hover {
         transform: translateY(-2px);
-        background: #b72d43;
+        background: #171518;
+        border-color: #171518;
+        color: #fff;
+    }
+
+    .boton-confirmar:hover svg {
+        stroke: #e04a62;
     }
 
     .boton-confirmar:focus-visible {
@@ -102,16 +237,21 @@ const enlaceConfirmacion = `https://wa.me/${telefono}?text=${encodeURIComponent(
         outline-offset: 3px;
     }
 
-    .ilustracion-ciudad {
-        position: absolute;
+    /* Ciudad dibujada: va entre el mensaje y el botón, ocupando todo el ancho */
+    .caja-ciudad {
+        position: relative;
         z-index: 0;
-        left: 50%;
-        bottom: -1.5rem;
+        overflow: hidden;
+        margin: 1.4rem -7.5% 0;
+    }
+
+    .ilustracion-ciudad {
         display: block;
-        width: 112%;
+        width: 100%;
+        max-width: none;
         height: auto;
-        transform: translateX(-50%);
-        opacity: 0.72;
+        opacity: 0.8;
+        transform-origin: 50% 70%;
         pointer-events: none;
     }
 
@@ -135,19 +275,92 @@ const enlaceConfirmacion = `https://wa.me/${telefono}?text=${encodeURIComponent(
 
     gsap.registerPlugin(ScrollTrigger);
 
+    const seccion = document.getElementById("seccion-confirmacion");
     const contenido = document.getElementById("contenido-confirmacion");
-    if (contenido && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-        gsap.fromTo(contenido.children, { opacity: 0, y: 16 }, {
-            opacity: 1,
-            y: 0,
-            duration: 0.85,
-            stagger: 0.12,
-            ease: "power2.out",
+
+    if (seccion && contenido && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        const ciudad = seccion.querySelector(".ilustracion-ciudad");
+        const fondo = seccion.querySelector(".fondo-confirmacion");
+        const sobre = contenido.querySelector(".sobre-titulo");
+        const letras = contenido.querySelectorAll(".letra");
+        const lineas = contenido.querySelectorAll(".linea");
+        const rombo = contenido.querySelector(".rombo");
+        const renglones = contenido.querySelectorAll(".renglon");
+        const boton = contenido.querySelector(".boton-confirmar");
+        const onda = contenido.querySelector(".onda");
+
+        // Aro del botón: se abre y se apaga, con pausas largas, para llamar la atención
+        let ondaActiva: gsap.core.Timeline | null = null;
+        const iniciarOnda = () => {
+            ondaActiva?.kill();
+            if (!onda) return;
+            ondaActiva = gsap
+                .timeline({ repeat: -1, repeatDelay: 2.2 })
+                .fromTo(onda, { scaleX: 1, scaleY: 1, opacity: 0.7 }, { scaleX: 1.22, scaleY: 1.6, opacity: 0, duration: 1.6, ease: "power1.out" });
+        };
+
+        const entrada = gsap.timeline({
             scrollTrigger: {
-                trigger: contenido,
-                start: "top 82%",
+                trigger: seccion,
+                start: "top 70%",
                 toggleActions: "play none none reset",
             },
+            onReverseComplete: () => ondaActiva?.kill(),
         });
+
+        if (fondo) entrada.fromTo(fondo, { opacity: 0 }, { opacity: 0.11, duration: 2, ease: "power2.out" }, 0);
+
+        // "Confirmación de": se escribe de izquierda a derecha
+        entrada.fromTo(
+            sobre,
+            { clipPath: "inset(-20% 100% -20% 0%)" },
+            { clipPath: "inset(-20% 0% -20% 0%)", duration: 1.2, ease: "power2.inOut" },
+            0.2
+        );
+
+        // "ASISTENCIA": cada letra sube desde una máscara
+        entrada.fromTo(letras, { yPercent: 115 }, { yPercent: 0, duration: 0.9, ease: "power3.out", stagger: 0.06 }, 0.8);
+
+        // Líneas y rombo
+        entrada.fromTo(lineas, { scaleX: 0 }, { scaleX: 1, duration: 0.8, ease: "power2.out" }, 1.6);
+        entrada.fromTo(rombo, { scale: 0 }, { scale: 1, duration: 0.6, ease: "back.out(2.5)" }, 1.75);
+
+        // Mensaje: un renglón desde cada lado
+        entrada.fromTo(
+            renglones,
+            { opacity: 0, x: (i) => (i % 2 === 0 ? -34 : 34) },
+            { opacity: 1, x: 0, duration: 0.95, ease: "power2.out", stagger: 0.25 },
+            1.9
+        );
+
+        // Ciudad: aparece con zoom, de grande y borrosa a nítida
+        if (ciudad) {
+            entrada.fromTo(
+                ciudad,
+                { scale: 1.5, opacity: 0, filter: "blur(8px)" },
+                { scale: 1.08, opacity: 0.8, filter: "blur(0px)", duration: 2.2, ease: "power3.out" },
+                2.3
+            );
+        }
+
+        // Botón: aparece con un pequeño rebote y luego el aro lo resalta
+        entrada.fromTo(
+            boton,
+            { opacity: 0, y: 18, scale: 0.9 },
+            { opacity: 1, y: 0, scale: 1, duration: 0.8, ease: "back.out(1.8)", onComplete: iniciarOnda },
+            4.1
+        );
+
+        // PARALLAX: la ciudad se mueve más lento que el texto
+        const parallax = (objetivo: Element | null, desde: number, hasta: number) => {
+            if (!objetivo) return;
+            gsap.fromTo(
+                objetivo,
+                { yPercent: desde },
+                { yPercent: hasta, ease: "none", scrollTrigger: { trigger: seccion, start: "top bottom", end: "bottom top", scrub: 0.6 } }
+            );
+        };
+        parallax(ciudad, -5, 5);
+        parallax(contenido, 3, -3);
     }
 </script>

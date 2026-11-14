@@ -10,6 +10,7 @@ import Direccion from "./Direccion.astro";
 import NombresPadres from "./NombresPadres.astro";
 import CodigoVestimenta from "./CodigoVestimenta.astro";
 import SugerenciaRegalo from "./SugerenciaRegalo.astro";
+import Restriccion from "./Restriccion.astro";
 import Confirma from "./Confirma.astro";
 import Despedida from "./Despedida.astro";
 
@@ -36,7 +37,93 @@ const { pases = 0 } = Astro.props;
     <Direccion />
     <CodigoVestimenta />
     <SugerenciaRegalo />
+    <Restriccion />
     <Confirma />
     <Despedida />
 </div>
 
+
+<script>
+    import { gsap } from "gsap";
+    import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+    gsap.registerPlugin(ScrollTrigger);
+
+    /*
+       PARALLAX DE PROFUNDIDAD
+
+       - Los fondos (ciudad, estatua, dibujos) se acercan despacio mientras la
+         sección cruza la pantalla.
+       - Los textos de las secciones sin fondo suben un poco más rápido que el
+         resto, así parece que flotan delante.
+
+       Los fondos de las secciones que usan este zoom no animan su escala en la
+       entrada (lo hace este script), para que no se pisen.
+       Con "reducir movimiento" activado en el celular no se hace nada.
+    */
+    if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        const seguir = (seccion: Element) => ({
+            trigger: seccion,
+            start: "top bottom",
+            end: "bottom top",
+            scrub: 0.8,
+        });
+
+        // [sección, fondo, escala inicial, escala final, ¿está volteado en horizontal?]
+        // (GSAP lee un volteo horizontal como giro de 180° + volteo vertical, por eso el signo va en scaleY)
+        const fondos: [string, string, number, number, boolean][] = [
+            ["#sobre-novios", ".capa-fondo", 1, 1.1, false],
+            [".fecha-xv", ".fondo-fecha", 1, 1.12, false],
+            [".fecha-xv", ".estatua", 1, 1.06, false],
+            [".contador", ".trazo", 1, 1.12, true],
+            [".direccion-seccion", ".fondo-direccion", 1, 1.12, true],
+            ["#padres", ".fondo-estatua", 1, 1.12, false],
+            ["#seccion-regalos", ".fondo-regalo", 1, 1.12, false],
+            ["#seccion-confirmacion", ".fondo-confirmacion", 1, 1.12, false],
+            ["#seccion-despedida", ".trazo-despedida", 1, 1.1, false],
+        ];
+
+        fondos.forEach(([seccion, fondo, desde, hasta, volteado]) => {
+            const sec = document.querySelector(seccion);
+            const el = sec?.querySelector(fondo);
+            if (!sec || !el) return;
+            const signo = volteado ? -1 : 1;
+            gsap.fromTo(
+                el,
+                { scaleX: desde, scaleY: signo * desde },
+                { scaleX: hasta, scaleY: signo * hasta, ease: "none", scrollTrigger: seguir(sec) }
+            );
+        });
+
+        // [sección, bloque de texto que flota delante]
+        const textos: [string, string][] = [
+            [".dedicatori", ".marco-texto"],
+            ["#padres", "#tarjeta-padres"],
+            ["#codigo-vestimenta", "#tarjeta-vestimenta"],
+            ["#seccion-regalos", "#tarjeta-regalo"],
+            ["#seccion-restriccion", "#marco-restriccion"],
+        ];
+
+        textos.forEach(([seccion, bloque]) => {
+            const sec = document.querySelector(seccion);
+            const el = sec?.querySelector(bloque);
+            if (!sec || !el) return;
+            gsap.fromTo(el, { y: 26 }, { y: -26, ease: "none", scrollTrigger: seguir(sec) });
+        });
+
+        // Ramitas finas de los marcos: se dibujan solas y el rombo rojo aparece al final
+        document.querySelectorAll<HTMLElement>(".rama-marco").forEach((rama) => {
+            const trazos = rama.querySelectorAll(".lado path");
+            const rombo = rama.querySelector(".rombo-rama");
+            const linea = gsap.timeline({
+                scrollTrigger: { trigger: rama, start: "top 92%", toggleActions: "play none none reset" },
+            });
+            linea.fromTo(trazos, { strokeDasharray: 1, strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: 1.6, ease: "power2.inOut" }, 0);
+            if (rombo) {
+                linea.fromTo(rombo, { scale: 0, transformOrigin: "50% 50%" }, { scale: 1, duration: 0.6, ease: "back.out(2.5)" }, 1.1);
+            }
+        });
+
+        window.addEventListener("load", () => ScrollTrigger.refresh());
+    }
+</script>

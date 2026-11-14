@@ -3,6 +3,11 @@
 
     <div class="contenido-contador">
         <h2 class="faltan">Faltan</h2>
+        <div class="adorno" aria-hidden="true">
+            <span class="linea izquierda"></span>
+            <span class="rombo"></span>
+            <span class="linea derecha"></span>
+        </div>
         <div class="unidades" id="contador-unidades" aria-live="off">
             <div class="unidad"><span class="valor" data-unidad="dias">00</span><span class="etiqueta">DÍAS</span></div>
             <span class="dos-puntos">:</span>
@@ -22,24 +27,27 @@
         isolation: isolate;
         display: grid;
         place-items: start center;
-        width: 110%;
+        width: 100%;
         min-height: 17rem;
         overflow: hidden;
-        padding: 1.15rem 5% 7rem;
-        background: #fff;
-        color: #111;
+        padding: 1.6rem 5% 10rem;
+        background-color: #050505;
+        color: #fff;
         text-align: center;
     }
 
+    /* Dibujo de la ciudad en líneas blancas, apenas visible */
     .trazo {
         position: absolute;
         z-index: 0;
-        left: 45%;
-        bottom: -8%;
-        width: 100%;
+        left: 50%;
+        bottom: 0;
+        width: 112%;
+        max-width: none;
         height: auto;
-        transform: translateX(-50%);
-        opacity: 0.25;
+        transform: translateX(-50%) scaleX(-1);
+        filter: invert(1) brightness(1.6);
+        opacity: 0.5;
         pointer-events: none;
     }
 
@@ -51,11 +59,42 @@
 
     .faltan {
         margin: 0 0 0.2rem;
-        color: #9d263c;
+        color: #fff;
         font-family: "Ragilone Brush", cursive;
         font-size: clamp(2rem, 10vw, 3rem);
         font-weight: 400;
         line-height: 1;
+    }
+
+    /* Adorno: dos líneas plateadas y un rombo rojo */
+    .adorno {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.6rem;
+        width: 55%;
+        margin: 0.35rem auto 0.9rem;
+    }
+
+    .linea {
+        flex: 1;
+        height: 1px;
+        background: #c9ccd2;
+    }
+
+    .linea.izquierda {
+        transform-origin: right center;
+    }
+
+    .linea.derecha {
+        transform-origin: left center;
+    }
+
+    .rombo {
+        width: 0.45rem;
+        aspect-ratio: 1;
+        rotate: 45deg;
+        background: #d5283f;
     }
 
     .unidades {
@@ -73,7 +112,7 @@
     }
 
     .valor {
-        color: #151417;
+        color: #fff;
         font-family: "Bebas Neue", Impact, sans-serif;
         font-size: clamp(2.3rem, 12vw, 3.4rem);
         line-height: 0.95;
@@ -82,7 +121,7 @@
 
     .dos-puntos {
         padding-top: 0.05em;
-        color: #b72d43;
+        color: #d5283f;
         font-family: "Bebas Neue", Impact, sans-serif;
         font-size: clamp(2rem, 10vw, 2.8rem);
         line-height: 0.95;
@@ -90,7 +129,7 @@
 
     .etiqueta {
         margin-top: 0.22rem;
-        color: #b72d43;
+        color: #c9ccd2;
         font-family: "Cormorant Garamond", Georgia, serif;
         font-size: clamp(0.48rem, 2.5vw, 0.68rem);
         font-weight: 600;
@@ -117,41 +156,125 @@
     const fechaEvento = new Date("2026-11-20T17:30:00").getTime();
 
     if (contador && valores?.length && Number.isFinite(fechaEvento)) {
+        const movimiento = !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
         const dos = (n: number) => String(n).padStart(2, "0");
-        const pintar = () => {
+
+        const calcular = () => {
             const restante = Math.max(0, fechaEvento - Date.now());
             const segundos = Math.floor(restante / 1000);
-            const partes = {
+            return {
                 dias: Math.floor(segundos / 86400),
                 horas: Math.floor((segundos % 86400) / 3600),
                 minutos: Math.floor((segundos % 3600) / 60),
                 segundos: segundos % 60,
             };
+        };
+
+        // Mientras los números "corren" al entrar, el reloj normal espera
+        let entrando = false;
+
+        const pintar = () => {
+            if (entrando) return;
+            const partes = calcular();
             valores.forEach((valor) => {
                 const unidad = valor.dataset.unidad as keyof typeof partes;
-                valor.textContent = dos(partes[unidad]);
+                const nuevo = dos(partes[unidad]);
+                if (valor.textContent !== nuevo) {
+                    valor.textContent = nuevo;
+                    // Cada segundo que cambia, el número se acomoda con un deslizamiento suave
+                    if (movimiento && unidad === "segundos") {
+                        gsap.fromTo(valor, { y: -5, opacity: 0.35 }, { y: 0, opacity: 1, duration: 0.35, ease: "power2.out" });
+                    }
+                }
             });
         };
 
         pintar();
         window.setInterval(pintar, 1000);
 
-        if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-            gsap.fromTo(contador.querySelectorAll(".faltan, .unidad, .dos-puntos"),
-                { opacity: 0, y: 14 },
+        if (movimiento) {
+            const trazo = contador.querySelector(".trazo");
+            const contenido = contador.querySelector(".contenido-contador");
+            const faltan = contador.querySelector(".faltan");
+            const lineas = contador.querySelectorAll(".linea");
+            const rombo = contador.querySelector(".rombo");
+            const unidades = contador.querySelectorAll(".unidad");
+            const puntos = contador.querySelectorAll(".dos-puntos");
+
+            const entrada = gsap.timeline({
+                scrollTrigger: {
+                    trigger: contador,
+                    start: "top 82%",
+                    toggleActions: "play none none reset",
+                },
+                onStart: () => {
+                    entrando = true;
+                },
+                onReverseComplete: () => {
+                    entrando = false;
+                    pintar();
+                },
+            });
+
+            // "Faltan" se descubre de izquierda a derecha, como escrito a mano
+            entrada.fromTo(
+                faltan,
+                { clipPath: "inset(-20% 100% -20% 0%)" },
+                { clipPath: "inset(-20% 0% -20% 0%)", duration: 1.1, ease: "power2.inOut" },
+                0
+            );
+            entrada.fromTo(lineas, { scaleX: 0 }, { scaleX: 1, duration: 0.8, ease: "power2.out" }, 0.7);
+            entrada.fromTo(rombo, { scale: 0 }, { scale: 1, duration: 0.6, ease: "back.out(2.5)" }, 0.85);
+
+            // Las cuatro unidades entran alternando izquierda y derecha
+            unidades.forEach((unidad, i) => {
+                entrada.fromTo(
+                    unidad,
+                    { opacity: 0, x: i % 2 === 0 ? -26 : 26 },
+                    { opacity: 1, x: 0, duration: 0.9, ease: "power2.out" },
+                    0.9 + i * 0.12
+                );
+            });
+            entrada.fromTo(puntos, { opacity: 0, scale: 0 }, { opacity: 1, scale: 1, duration: 0.5, ease: "back.out(2.5)", stagger: 0.12 }, 1.1);
+
+            // Los números corren desde cero hasta el valor real
+            const progreso = { v: 0 };
+            entrada.to(
+                progreso,
                 {
-                    opacity: 1,
-                    y: 0,
-                    duration: 0.9,
-                    stagger: 0.1,
+                    v: 1,
+                    duration: 1.8,
                     ease: "power2.out",
-                    scrollTrigger: {
-                        trigger: contador,
-                        start: "top 82%",
-                        toggleActions: "play none none reset",
+                    onUpdate: () => {
+                        const real = calcular();
+                        valores.forEach((valor) => {
+                            const unidad = valor.dataset.unidad as keyof typeof real;
+                            valor.textContent = dos(Math.round(real[unidad] * progreso.v));
+                        });
+                    },
+                    onComplete: () => {
+                        entrando = false;
+                        pintar();
                     },
                 },
+                1
             );
+
+            // Parallax: el dibujo de fondo se mueve más lento que los números
+            if (trazo) {
+                gsap.fromTo(
+                    trazo,
+                    { yPercent: -1 },
+                    { yPercent: 3, ease: "none", scrollTrigger: { trigger: contador, start: "top bottom", end: "bottom top", scrub: 0.6 } }
+                );
+            }
+            if (contenido) {
+                gsap.fromTo(
+                    contenido,
+                    { yPercent: 4 },
+                    { yPercent: -6, ease: "none", scrollTrigger: { trigger: contador, start: "top bottom", end: "bottom top", scrub: 0.6 } }
+                );
+            }
         }
     }
 </script>
