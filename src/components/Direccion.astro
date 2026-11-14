@@ -131,7 +131,7 @@ const palabras = (texto: string) => texto.split(" ").map((p) => Array.from(p));
         max-width: 22rem;
         margin: 0 auto;
         padding: 1.5rem 0.9rem 1.3rem;
-        border: 1px solid #262326;
+        border: 1px solid #9a9da4;
         background-color: rgba(255, 255, 255, 0.82);
         text-align: center;
     }
@@ -242,7 +242,7 @@ const palabras = (texto: string) => texto.split(" ").map((p) => Array.from(p));
     .linea-hora {
         flex: 1;
         height: 1px;
-        background: #b72d43;
+        background: #9a9da4;
     }
 
     .linea-hora.izquierda {
@@ -274,37 +274,47 @@ const palabras = (texto: string) => texto.split(" ").map((p) => Array.from(p));
         font-variant-numeric: tabular-nums;
     }
 
+    /* Botón plateado, igual que los de la sección de regalo y la confirmación */
     .boton-ubicacion {
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        gap: 0.55rem;
+        gap: 0.5rem;
         min-width: 11rem;
-        padding: 0.72rem 1.2rem;
-        border: 1px solid #171518;
+        padding: 0.72rem 1.3rem;
+        border: 1px solid #8d9097;
         border-radius: 999px;
-        background: #171518;
-        color: #fff;
+        background: #c4c7cd;
+        color: #171518;
         font-family: "Cormorant Garamond", Georgia, serif;
         font-size: 1.05rem;
-        font-weight: 600;
+        font-weight: 700;
+        letter-spacing: 0.01em;
         text-decoration: none;
-        transition: background-color 180ms ease, color 180ms ease;
+        box-shadow: 0 2px 6px rgba(23, 21, 24, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.7);
+        transition: background-color 200ms ease, color 200ms ease, border-color 200ms ease, transform 200ms ease;
     }
 
     .boton-ubicacion svg {
         width: 1rem;
         height: 1rem;
-        stroke: #df5165;
-        stroke-width: 1.8;
+        stroke: #b72d43;
+        stroke-width: 2.2;
         stroke-linecap: round;
         stroke-linejoin: round;
+        transition: stroke 200ms ease, translate 200ms ease;
     }
 
     .boton-ubicacion:hover {
-        background: #b72d43;
-        border-color: #b72d43;
+        transform: translateY(-2px);
+        background: #171518;
+        border-color: #171518;
         color: #fff;
+    }
+
+    .boton-ubicacion:hover svg {
+        stroke: #e04a62;
+        translate: 2px -2px;
     }
 
     .boton-ubicacion:focus-visible {

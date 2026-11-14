@@ -10,6 +10,7 @@
                 </span>
             ))
         }
+        <span class="linea-mes" aria-hidden="true"></span>
     </h2>
     <p class="anio">2026</p>
 
@@ -82,6 +83,29 @@
         display: inline-block;
     }
 
+    /* Línea plateada fina bajo el mes, con un rombito en la punta */
+    .linea-mes {
+        position: absolute;
+        left: 0;
+        top: calc(100% + 0.06em);
+        width: 36%;
+        height: 1px;
+        background: #8d9097;
+        transform-origin: left center;
+    }
+
+    .linea-mes::after {
+        content: "";
+        position: absolute;
+        right: -0.2rem;
+        top: 50%;
+        width: 0.4rem;
+        aspect-ratio: 1;
+        translate: 0 -50%;
+        rotate: 45deg;
+        background: #8d9097;
+    }
+
     .anio {
         z-index: 2;
         top: 27%;
@@ -138,6 +162,7 @@
         if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
         const letras = mes.querySelectorAll(".letra");
+        const lineaMes = mes.querySelector(".linea-mes");
 
         // Los números "corren" hasta su valor final y quedan fijos
         const textoDia = dia.textContent ?? "";
@@ -189,6 +214,11 @@
             { opacity: 1, x: 0, filter: "blur(0px)", duration: 1, ease: "power2.out", stagger: 0.07 },
             0.4
         );
+
+        // Línea plateada bajo el mes: se dibuja de izquierda a derecha
+        if (lineaMes) {
+            entrada.fromTo(lineaMes, { scaleX: 0 }, { scaleX: 1, duration: 0.9, ease: "power2.out" }, 1.5);
+        }
 
         // Año: entra desde la derecha mientras sube hasta 2026
         entrada.fromTo(anio, { opacity: 0, x: 40 }, { opacity: 1, x: 0, duration: 1.5, ease: "power3.out" }, 0.8);
